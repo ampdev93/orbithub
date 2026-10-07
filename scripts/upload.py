@@ -10,8 +10,12 @@ Requires:
     ia configure
 
 Usage:
-    python3 scripts/upload.py release.nfo "/path/to/audio.mp3"
-    python3 scripts/upload.py release.nfo "/path/to/audio.mp3" --upload
+    python3 scripts/upload.py "/path/to/audio.mp3"
+    python3 scripts/upload.py "/path/to/audio.mp3" --upload
+
+The metadata file must sit beside the audio file and use the same basename:
+    orbit-19941231-1-nigel-walker.mp3
+    orbit-19941231-1-nigel-walker.nfo
 """
 
 from __future__ import annotations
@@ -52,7 +56,6 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description="Prepare or upload one OrbitHub set to Internet Archive."
     )
-    parser.add_argument("nfo", type=Path, help="Original release .nfo file")
     parser.add_argument("audio", type=Path, help="Audio file to upload")
     parser.add_argument(
         "--upload",
@@ -325,23 +328,27 @@ def upload_item(
 def main() -> int:
     args = parse_args()
 
-    if not args.nfo.is_file():
-        print(f"ERROR: .nfo not found: {args.nfo}", file=sys.stderr)
-        return 1
-
     if not args.audio.is_file():
         print(f"ERROR: audio file not found: {args.audio}", file=sys.stderr)
         return 1
 
+    nfo_path = args.audio.with_suffix(".nfo")
+    if not nfo_path.is_file():
+        print(
+            f"ERROR: matching .nfo not found: {nfo_path}",
+            file=sys.stderr,
+        )
+        return 1
+
     try:
-        text = read_nfo(args.nfo)
+        text = read_nfo(nfo_path)
         event, fields = parse_nfo(text)
         fields["filename"] = args.audio.name
         identifier = args.identifier or build_identifier(event, fields)
         description = build_description(event, fields)
         metadata = build_metadata(identifier, event, fields, description)
 
-        print_preview(identifier, args.nfo, args.audio, fields, metadata)
+        print_preview(identifier, nfo_path, args.audio, fields, metadata)
 
         if not args.upload:
             print("DRY RUN: nothing uploaded. Add --upload after reviewing this preview.")
@@ -349,7 +356,7 @@ def main() -> int:
 
         upload_item(
             identifier,
-            args.nfo,
+            nfo_path,
             args.audio,
             fields,
             metadata,
