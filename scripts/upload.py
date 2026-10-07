@@ -200,6 +200,14 @@ def normalize_notes(notes: str) -> str:
     return notes
 
 
+def normalize_files_in_set(value: str) -> str:
+    match = re.search(r"(\d+)\s+files?\b", value, flags=re.I)
+    if match:
+        return match.group(1)
+
+    return value.strip()
+
+
 def build_description(event: dict[str, str], fields: dict[str, str]) -> str:
     esc = lambda value: html.escape(value, quote=False)
 
@@ -228,7 +236,7 @@ def build_description(event: dict[str, str], fields: dict[str, str]) -> str:
             f"<strong>Sample Rate:</strong> {esc(fields['sample_rate'])}<br>",
             f"<strong>Channels:</strong> {esc(fields['channels'])}<br>",
             "<strong>Source:</strong> DAT<br>",
-            f"<strong>Tapes/files in set:</strong> {esc(fields['tapes_files'])}<br>",
+            f"<strong>Files in set:</strong> {esc(normalize_files_in_set(fields['tapes_files']))}<br>",
             f"<strong>DJ(s) for this file:</strong> {esc(fields['djs_file'])}<br>",
             f"<strong>DJ(s) for set:</strong> {esc(fields['djs_set'])}<br><br>",
             f"<strong>Notes:</strong> {esc(notes)}",
