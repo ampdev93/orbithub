@@ -48,10 +48,22 @@ def parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
+def normalize_html_for_compare(value: str) -> str:
+    """Ignore Internet Archive's harmless <br> serialization differences."""
+    return value.replace("<br />", "<br>").replace("<br/>", "<br>")
+
+
+def descriptions_match(current: str, desired: str) -> bool:
+    return normalize_html_for_compare(current) == normalize_html_for_compare(desired)
+
+
 def show_diff(current: str, desired: str) -> None:
+    current_normalized = normalize_html_for_compare(current)
+    desired_normalized = normalize_html_for_compare(desired)
+
     diff = difflib.unified_diff(
-        current.splitlines(),
-        desired.splitlines(),
+        current_normalized.splitlines(),
+        desired_normalized.splitlines(),
         fromfile="current IA description",
         tofile="normalized description",
         lineterm="",
@@ -72,7 +84,7 @@ def verify_description(identifier: str, desired: str) -> bool:
         item = internetarchive.get_item(identifier)
         current = item.metadata.get("description", "")
 
-        if current == desired:
+        if descriptions_match(current, desired):
             return True
 
         if attempt < attempts:
@@ -131,7 +143,7 @@ def main() -> int:
         show_diff(current, desired)
         print()
 
-        if current == desired:
+        if descriptions_match(current, desired):
             return 0
 
         if not args.apply:
