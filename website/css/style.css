@@ -1,0 +1,158 @@
+:root {
+    --bg:#0d0d0d;
+    --panel:#171717;
+    --text:#e5e5e5;
+    --hover:#2d2d2d;
+}
+
+/* Base layout */
+
+html, body {
+    height:100%;
+    margin:0;
+    font-family:Inter, Helvetica, Arial, sans-serif;
+    background:var(--bg);
+    color:var(--text);
+}
+
+body {
+    display:flex;
+    flex-direction:column;
+    min-height:100vh;
+}
+
+/* Header */
+
+.navbar {
+    width:100%;
+    max-width:1200px;
+    margin:0 auto;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:1rem 2rem;
+    box-sizing:border-box;
+}
+
+header {
+    background:var(--panel);
+    border-bottom:1px solid var(--hover);
+}
+
+.nav-left a {
+    font-size:18px;
+    font-weight:600;
+}
+
+.nav-right {
+    display:flex;
+    gap:1rem;
+}
+
+.nav-right a {
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    width:42px;
+    height:42px;
+    border-radius:4px;
+}
+
+.nav-right a:hover {
+    background:var(--hover);
+}
+
+nav a {
+    color:var(--text);
+    text-decoration:none;
+    letter-spacing:0.08em;
+}
+
+.icon {
+    width:22px;
+    height:22px;
+    fill:none;
+    stroke:var(--text);
+    stroke-width:2;
+    stroke-linecap:round;
+    stroke-linejoin:round;
+}
+
+/* Main content */
+
+main {
+    flex:1;
+    width:100%;
+    max-width:1200px;
+    margin:0 auto;
+    padding:2rem;
+}
+
+.left {
+    text-align:left;
+}
+
+.center {
+    text-align:center;
+}
+
+h1 {
+    font-size:36px;
+}
+
+.gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 2rem;
+}
+
+.gallery img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* Footer */
+footer {
+    width:100%;
+    max-width:1200px;
+    margin:0 auto;
+    padding:1rem 2rem;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    border-top:1px solid #333;
+    color:#888;
+    font-size:0.85rem;
+    box-sizing: border-box
+}
+
+.footer-left {
+    text-align:left;
+}
+
+.footer-right {
+    text-align:right;
+}
+
+/* Cards */
+
+.grid {
+    display:grid;
+    grid-template-columns:repeat(auto-fit, minmax(180px, 1fr));
+    gap:1rem;
+    margin-top:2rem;
+}
+
+.card {
+    background:var(--panel);
+    padding:4rem 1rem;
+    color:var(--text);
+    text-decoration:none;
+}
+
+.card:hover {
+    background:var(--hover);
+}
+
+
