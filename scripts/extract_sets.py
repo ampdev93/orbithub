@@ -11,9 +11,10 @@ Each ZIP must contain exactly:
     - one .mp3 file
     - one release.nfo file
 
-The extracted NFO is renamed to match the MP3 basename:
-    orbit-YYYYMMDD-N-artist.mp3
-    orbit-YYYYMMDD-N-artist.nfo
+The MP3 and NFO are renamed to the canonical OrbitHub basename derived
+from the NFO metadata:
+    orbit-YYYYMMDD-N-dj-name.mp3
+    orbit-YYYYMMDD-N-dj-name.nfo
 
 Default behaviour is a dry run. Use --apply to write files.
 """
@@ -26,6 +27,8 @@ import sys
 import tempfile
 import zipfile
 from pathlib import Path
+
+from upload import build_identifier, parse_nfo, read_nfo
 
 
 def parse_args() -> argparse.Namespace:
@@ -93,38 +96,44 @@ def process_zip(zip_path: Path, dest: Path, apply: bool) -> tuple[str, str]:
         mp3_member = mp3s[0]
         nfo_member = nfos[0]
 
-        mp3_name = Path(mp3_member.filename).name
-        mp3_target = dest / mp3_name
-        nfo_target = dest / f"{Path(mp3_name).stem}.nfo"
-
-        validate_target(mp3_target)
-        validate_target(nfo_target)
-
-        print(f"{zip_path.name}")
-        print(f"  MP3: {mp3_name}")
-        print(f"  NFO: release.nfo -> {nfo_target.name}")
-
-        if not apply:
-            return mp3_name, nfo_target.name
-
-        dest.mkdir(parents=True, exist_ok=True)
-
         with tempfile.TemporaryDirectory() as tmp_dir:
             tmp = Path(tmp_dir)
-
-            mp3_temp = tmp / mp3_name
             nfo_temp = tmp / "release.nfo"
 
-            with archive.open(mp3_member) as src, mp3_temp.open("wb") as out:
+            with archive.open(nfo_member) as src, nfo_temp.open("wb") as out:
                 shutil.copyfileobj(src, out)
 
-            with archive.open(nfo_member) as src, nfo_temp.open("wb") as out:
+            event, fields = parse_nfo(read_nfo(nfo_temp))
+            basename = build_identifier(event, fields)
+            mp3_name = f"{basename}.mp3"
+            nfo_name = f"{basename}.nfo"
+
+            mp3_target = dest / mp3_name
+            nfo_target = dest / nfo_name
+
+            validate_target(mp3_target)
+            validate_target(nfo_target)
+
+            original_mp3_name = Path(mp3_member.filename).name
+
+            print(f"{zip_path.name}")
+            print(f"  MP3: {original_mp3_name} -> {mp3_name}")
+            print(f"  NFO: release.nfo -> {nfo_name}")
+
+            if not apply:
+                return mp3_name, nfo_name
+
+            dest.mkdir(parents=True, exist_ok=True)
+
+            mp3_temp = tmp / original_mp3_name
+
+            with archive.open(mp3_member) as src, mp3_temp.open("wb") as out:
                 shutil.copyfileobj(src, out)
 
             shutil.move(str(mp3_temp), mp3_target)
             shutil.move(str(nfo_temp), nfo_target)
 
-        return mp3_name, nfo_target.name
+        return mp3_name, nfo_name
 
 
 def main() -> int:
