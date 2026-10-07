@@ -5,7 +5,8 @@ Implements Issue #9 step 3: inventory before changing anything.
 
 This script never uploads, edits or deletes local or Internet Archive data.
 It compares local MP3/NFO pairs, the canonical OrbitHub naming/metadata
-contract, existing Internet Archive items, and content/sets.json.
+contract, existing Internet Archive items, and content/sets.json. It also
+reports website entries that have no corresponding local MP3/NFO pair.
 
 Requires:
     pip install internetarchive
@@ -102,6 +103,36 @@ def load_website_urls(path: Path) -> dict[str, list[str]]:
                 result.setdefault(identifier, []).append(url)
 
     return result
+
+
+def report_website_only_items(
+    local_identifiers: set[str],
+    website_urls: dict[str, list[str]],
+) -> list[dict[str, object]]:
+    rows: list[dict[str, object]] = []
+
+    for identifier in sorted(set(website_urls) - local_identifiers):
+        urls = website_urls[identifier]
+        rows.append(
+            {
+                "nfo": "-",
+                "local_mp3": "-",
+                "event": "-",
+                "file": "-",
+                "dj": "-",
+                "identifier": identifier,
+                "canonical_mp3": f"{identifier}.mp3",
+                "ia_exists": True,
+                "ia_mp3": "-",
+                "description": "not checked",
+                "website": "present",
+                "website_url": " | ".join(urls),
+                "status": "ERROR",
+                "note": "website/IA item has no matching local MP3/NFO pair",
+            }
+        )
+
+    return rows
 
 
 def website_status(
@@ -312,6 +343,13 @@ def main() -> int:
     print()
 
     rows = [inspect_pair(path, website_urls) for path in nfo_files]
+
+    local_identifiers = {
+        str(row["identifier"])
+        for row in rows
+        if row["identifier"] and row["identifier"] != "-"
+    }
+    rows.extend(report_website_only_items(local_identifiers, website_urls))
 
     for row in rows:
         print_row(row)
