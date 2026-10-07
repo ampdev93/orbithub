@@ -11,15 +11,25 @@ Static archival website for The Orbit.
 - `links.html` — external archive links
 - `about.html` — project information
 - `header.html` / `footer.html` — shared page fragments
+- `content/sets.json` — event and set metadata
+- `content/flyers.json` — flyer metadata
+- `content/images.json` — image metadata
+- `content/links.json` — external-link metadata
 - `css/style.css` — site styles
-- `js/main.js` — shared fragments and audio playback
+- `js/main.js` — shared fragments, content rendering and audio playback
 - `assets/flyers/` — tracked flyer assets
 
 Local work directories and `assets/images/` are intentionally ignored.
 
+## Content workflow
+
+The HTML files define the static page structure. Archive content is stored separately in `content/*.json` and rendered by `js/main.js`.
+
+For normal archive updates, edit the relevant JSON file rather than adding repeated content directly to the HTML page.
+
 ## Local testing
 
-The shared header and footer are loaded with `fetch()`, so test through a local web server rather than opening HTML files directly:
+Shared fragments and JSON content are loaded with `fetch()`, so test through a local web server rather than opening HTML files directly:
 
 ```bash
 python3 -m http.server 8000
