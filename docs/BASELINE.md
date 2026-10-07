@@ -130,6 +130,12 @@ Audio files are hosted externally on Internet Archive and are not stored in the 
 
 The site uses a hidden HTML5 audio element controlled by `js/main.js`.
 
+## Internet Archive metadata
+
+Original release `.nfo` files are the source for Internet Archive item descriptions. The originals should be preserved unchanged, while IA descriptions use a cleaned HTML representation with documented normalization rules.
+
+See `docs/IA_METADATA.md` for the canonical conversion rules and example format.
+
 ## Assets
 
 Small website assets and thumbnails may be stored in the repository.
