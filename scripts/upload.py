@@ -331,15 +331,30 @@ def upload_item(
             )
             time.sleep(delay)
 
-    refreshed = internetarchive.get_item(identifier)
-    remote_names = {file.name for file in refreshed.files}
-
     expected = {fields["filename"]}
-    missing = expected - remote_names
+    verification_attempts = 12
+    verification_delay = 10
+    missing = expected
+
+    for attempt in range(1, verification_attempts + 1):
+        refreshed = internetarchive.get_item(identifier)
+        remote_names = {file.name for file in refreshed.files}
+        missing = expected - remote_names
+
+        if not missing:
+            break
+
+        if attempt < verification_attempts:
+            print(
+                "Upload accepted; waiting for Internet Archive metadata to update "
+                f"({attempt}/{verification_attempts})..."
+            )
+            time.sleep(verification_delay)
+
     if missing:
         raise RuntimeError(
-            "Upload completed but verification could not find: "
-            + ", ".join(sorted(missing))
+            "Upload was accepted, but verification timed out before Internet Archive "
+            "listed: " + ", ".join(sorted(missing))
         )
 
     print()
