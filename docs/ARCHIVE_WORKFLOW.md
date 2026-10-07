@@ -128,6 +128,18 @@ The uploaded MP3 filename must be:
 orbit-YYYYMMDD-N-dj-name.mp3
 ```
 
+The IA title must use the canonical display format:
+
+```text
+The Orbit - DD-MM-YY - File N of N - DJ(s)
+```
+
+Example:
+
+```text
+The Orbit - 23-07-94 - File 3 of 6 - John Berry
+```
+
 The IA description must use the canonical filename, regardless of any historical filename used by an older release.
 
 Canonical direct audio URL:
@@ -137,6 +149,14 @@ https://archive.org/download/{identifier}/{identifier}.mp3
 ```
 
 ## Internet Archive metadata
+
+The normalized IA metadata must include the canonical title plus the canonical description.
+
+Canonical title:
+
+```text
+The Orbit - DD-MM-YY - File N of N - DJ(s)
+```
 
 The normalized description must include:
 
@@ -269,6 +289,7 @@ canonical identifier
 canonical MP3 filename
 existing IA identifier
 existing IA MP3 filename
+IA title status
 IA description status
 OrbitHub audio URL
 ```
@@ -286,9 +307,9 @@ upload canonical MP3 filename
     ↓
 verify canonical MP3 exists
     ↓
-update normalized description
+update canonical title and normalized description as needed
     ↓
-verify description
+verify title and description
     ↓
 retain legacy MP3 filename
 ```
@@ -347,6 +368,7 @@ Before an archive item is considered complete, verify:
 - [ ] basename follows the canonical naming convention
 - [ ] IA identifier matches the canonical basename
 - [ ] IA MP3 filename matches the canonical basename
+- [ ] IA title matches `The Orbit - DD-MM-YY - File N of N - DJ(s)`
 - [ ] IA description filename matches the canonical basename
 - [ ] IA description shows `Source: DAT`
 - [ ] IA description shows `Files in set: N`
