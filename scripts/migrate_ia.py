@@ -12,8 +12,8 @@ For each local canonical MP3/NFO pair:
 - skip already-canonical items
 - upload canonical MP3 if only a legacy MP3 exists
 - verify canonical MP3 exists
-- update description only if needed
-- verify description
+- update canonical title and description only if needed
+- verify title and description
 - retain all legacy MP3 files
 
 Usage:
@@ -95,14 +95,19 @@ def verify_remote_file(identifier: str, filename: str) -> bool:
     return False
 
 
-def verify_description(identifier: str, desired: str) -> bool:
+def verify_metadata(identifier: str, desired_title: str, desired_description: str) -> bool:
     attempts = 12
     delay = 10
 
     for attempt in range(1, attempts + 1):
         item = internetarchive.get_item(identifier)
-        current = item.metadata.get("description", "")
-        if normalize_html(current) == normalize_html(desired):
+        current_title = item.metadata.get("title", "")
+        current_description = item.metadata.get("description", "")
+        if (
+            current_title == desired_title
+            and normalize_html(current_description)
+            == normalize_html(desired_description)
+        ):
             return True
 
         if attempt < attempts:
@@ -169,16 +174,23 @@ def inspect_item(nfo_path: Path) -> dict[str, object]:
     canonical_present = canonical_mp3 in mp3_names
     legacy_mp3s = [name for name in mp3_names if name != canonical_mp3]
 
+    desired_title = (
+        f"The Orbit - {event['display_date']} - "
+        f"File {event['file_number']} of {event['file_total']} - {fields['djs_file']}"
+    )
     desired_fields = dict(fields)
     desired_fields["filename"] = canonical_mp3
     desired_description = build_description(event, desired_fields)
+
+    current_title = item.metadata.get("title", "")
     current_description = item.metadata.get("description", "")
+    title_matches = current_title == desired_title
     description_matches = (
         normalize_html(current_description)
         == normalize_html(desired_description)
     )
 
-    if canonical_present and description_matches:
+    if canonical_present and title_matches and description_matches:
         action = "SKIP"
     elif canonical_present:
         action = "UPDATE METADATA"
@@ -195,7 +207,9 @@ def inspect_item(nfo_path: Path) -> dict[str, object]:
         "canonical_mp3": canonical_mp3,
         "legacy_mp3s": legacy_mp3s,
         "canonical_present": canonical_present,
+        "title_matches": title_matches,
         "description_matches": description_matches,
+        "desired_title": desired_title,
         "desired_description": desired_description,
         "action": action,
     }
@@ -214,6 +228,10 @@ def print_plan(info: dict[str, object]) -> None:
         f"{'yes' if info['canonical_present'] else 'no'}"
     )
     print(
+        f"  Title            : "
+        f"{'canonical' if info['title_matches'] else 'needs update'}"
+    )
+    print(
         f"  Description      : "
         f"{'canonical' if info['description_matches'] else 'needs update'}"
     )
@@ -225,6 +243,7 @@ def apply_item(info: dict[str, object]) -> str:
     identifier = str(info["identifier"])
     canonical_mp3 = str(info["canonical_mp3"])
     audio_path = Path(info["audio_path"])
+    desired_title = str(info["desired_title"])
     desired_description = str(info["desired_description"])
 
     if info["action"] == "SKIP":
@@ -244,13 +263,21 @@ def apply_item(info: dict[str, object]) -> str:
         print("  Canonical MP3 verified.")
 
     refreshed = internetarchive.get_item(identifier)
+    current_title = refreshed.metadata.get("title", "")
     current_description = refreshed.metadata.get("description", "")
 
+    metadata_update: dict[str, str] = {}
+
+    if current_title != desired_title:
+        metadata_update["title"] = desired_title
+
     if normalize_html(current_description) != normalize_html(desired_description):
-        print("  Updating description...")
-        result = refreshed.modify_metadata(
-            {"description": desired_description}
-        )
+        metadata_update["description"] = desired_description
+
+    if metadata_update:
+        changed = " + ".join(metadata_update.keys())
+        print(f"  Updating {changed}...")
+        result = refreshed.modify_metadata(metadata_update)
 
         status_code = (
             result.get("status_code") if isinstance(result, dict) else None
@@ -258,12 +285,12 @@ def apply_item(info: dict[str, object]) -> str:
         if status_code is not None and not (200 <= int(status_code) < 300):
             raise RuntimeError(f"metadata update failed: {result}")
 
-        if not verify_description(identifier, desired_description):
+        if not verify_metadata(identifier, desired_title, desired_description):
             raise RuntimeError(
                 "metadata update was accepted but verification timed out"
             )
 
-        print("  Description verified.")
+        print("  Title and description verified.")
 
     return "UPDATED"
 
