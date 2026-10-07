@@ -22,7 +22,7 @@ Keep recording and release metadata that describes the archival object:
 - Sample Rate
 - Channels
 - Source
-- Tapes/files in set
+- Files in set
 - DJ(s) for this file
 - DJ(s) for set
 - Notes
@@ -51,6 +51,7 @@ Apply these rules when converting an original `.nfo` into the Internet Archive d
 - `Release Date` → `Original Release Date`
 - `Hz` → `Sample Rate`
 - `Source: Tape` → `Source: DAT`
+- `Tapes/files in set: X tapes / Y files (sides)` → `Files in set: Y`
 - references to `tape` in Notes → `recording`
 - flatten wrapped DJ lists into a single line
 - append `bytes` to File Size when the value is a raw byte count
@@ -78,7 +79,7 @@ Use this structure:
 <strong>Sample Rate:</strong> 44,100Hz<br>
 <strong>Channels:</strong> Joint Stereo<br>
 <strong>Source:</strong> DAT<br>
-<strong>Tapes/files in set:</strong> N tapes / N files (sides)<br>
+<strong>Files in set:</strong> N<br>
 <strong>DJ(s) for this file:</strong> Artist Name<br>
 <strong>DJ(s) for set:</strong> Artist One, Artist Two, Artist Three<br><br>
 
@@ -129,7 +130,7 @@ Internet Archive description:
 <strong>Sample Rate:</strong> 44,100Hz<br>
 <strong>Channels:</strong> Joint Stereo<br>
 <strong>Source:</strong> DAT<br>
-<strong>Tapes/files in set:</strong> 3 tapes / 6 files (sides)<br>
+<strong>Files in set:</strong> 6<br>
 <strong>DJ(s) for this file:</strong> Colin Dale<br>
 <strong>DJ(s) for set:</strong> Nigel Walker, John Berry, Salt Tank, Colin Dale<br><br>
 
