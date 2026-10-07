@@ -5,11 +5,18 @@
     --hover:#2d2d2d;
 }
 
+*,
+*::before,
+*::after {
+    box-sizing:border-box;
+}
+
 /* Base layout */
 
-html, body {
-    height:100%;
+html,
+body {
     margin:0;
+    min-height:100%;
     font-family:Inter, Helvetica, Arial, sans-serif;
     background:var(--bg);
     color:var(--text);
@@ -19,9 +26,24 @@ body {
     display:flex;
     flex-direction:column;
     min-height:100vh;
+    line-height:1.5;
+}
+
+a {
+    color:inherit;
+}
+
+a:focus-visible {
+    outline:2px solid var(--text);
+    outline-offset:3px;
 }
 
 /* Header */
+
+header {
+    background:var(--panel);
+    border-bottom:1px solid var(--hover);
+}
 
 .navbar {
     width:100%;
@@ -31,12 +53,6 @@ body {
     justify-content:space-between;
     align-items:center;
     padding:1rem 2rem;
-    box-sizing:border-box;
-}
-
-header {
-    background:var(--panel);
-    border-bottom:1px solid var(--hover);
 }
 
 .nav-left a {
@@ -101,18 +117,19 @@ h1 {
 }
 
 .gallery {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-    gap: 2rem;
+    display:grid;
+    grid-template-columns:repeat(auto-fill, minmax(150px, 1fr));
+    gap:2rem;
 }
 
 .gallery img {
-    width: 100%;
-    height: auto;
-    display: block;
+    width:100%;
+    height:auto;
+    display:block;
 }
 
 /* Footer */
+
 footer {
     width:100%;
     max-width:1200px;
@@ -121,10 +138,10 @@ footer {
     display:flex;
     justify-content:space-between;
     align-items:center;
+    gap:1rem;
     border-top:1px solid #333;
     color:#888;
     font-size:0.85rem;
-    box-sizing: border-box
 }
 
 .footer-left {
@@ -155,4 +172,31 @@ footer {
     background:var(--hover);
 }
 
+@media (max-width:600px) {
+    .navbar {
+        padding:0.75rem 1rem;
+    }
 
+    .nav-right {
+        gap:0.25rem;
+    }
+
+    .nav-right a {
+        width:40px;
+        height:40px;
+    }
+
+    main {
+        padding:1rem;
+    }
+
+    footer {
+        padding:1rem;
+        flex-direction:column;
+        align-items:flex-start;
+    }
+
+    .footer-right {
+        text-align:left;
+    }
+}
