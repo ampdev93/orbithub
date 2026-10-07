@@ -306,46 +306,51 @@ def upload_item(
 
     item = internetarchive.get_item(identifier)
 
+    audio_already_present = False
+
     if item.exists:
         remote_names = remote_file_names(item)
         if fields["filename"] in remote_names:
-            raise RuntimeError(
-                f"Internet Archive item already contains {fields['filename']}: {identifier}\n"
-                "Refusing to overwrite an existing audio file."
-            )
-        print(
-            f"Internet Archive item already exists but audio is absent: {identifier}\n"
-            "Continuing upload to the existing item."
-        )
-
-    print(f"Uploading audio to {identifier}...")
-    transport_retries = 5
-
-    for attempt in range(1, transport_retries + 1):
-        try:
-            response = item.upload_file(
-                str(audio_path),
-                key=fields["filename"],
-                metadata=metadata,
-                queue_derive=False,
-                verify=True,
-                retries=10,
-                verbose=True,
-            )
-            response.raise_for_status()
-            break
-        except requests.exceptions.RequestException as error:
-            if attempt == transport_retries:
-                raise RuntimeError(
-                    f"Upload failed after {transport_retries} connection retries: {error}"
-                ) from error
-
-            delay = 30
+            audio_already_present = True
             print(
-                f"Connection to Internet Archive failed ({attempt}/{transport_retries}). "
-                f"Retrying in {delay} seconds..."
+                f"Internet Archive already contains {fields['filename']}: {identifier}\n"
+                "Skipping upload and verifying the existing file."
             )
-            time.sleep(delay)
+        else:
+            print(
+                f"Internet Archive item already exists but audio is absent: {identifier}\n"
+                "Continuing upload to the existing item."
+            )
+
+    if not audio_already_present:
+        print(f"Uploading audio to {identifier}...")
+        transport_retries = 5
+
+        for attempt in range(1, transport_retries + 1):
+            try:
+                response = item.upload_file(
+                    str(audio_path),
+                    key=fields["filename"],
+                    metadata=metadata,
+                    queue_derive=False,
+                    verify=True,
+                    retries=10,
+                    verbose=True,
+                )
+                response.raise_for_status()
+                break
+            except requests.exceptions.RequestException as error:
+                if attempt == transport_retries:
+                    raise RuntimeError(
+                        f"Upload failed after {transport_retries} connection retries: {error}"
+                    ) from error
+
+                delay = 30
+                print(
+                    f"Connection to Internet Archive failed ({attempt}/{transport_retries}). "
+                    f"Retrying in {delay} seconds..."
+                )
+                time.sleep(delay)
 
     expected = {fields["filename"]}
     verification_attempts = 12
