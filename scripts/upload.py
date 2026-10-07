@@ -244,7 +244,6 @@ def build_metadata(
         "date": event_date_iso(event["display_date"]),
         "description": description,
         "subject": ["The Orbit", "Techno", "DJ Set"],
-        "identifier": identifier,
     }
 
 
@@ -294,7 +293,7 @@ def upload_item(
 
     print(f"Uploading audio to {identifier}...")
     response = item.upload_file(
-        audio_path,
+        str(audio_path),
         key=fields["filename"],
         metadata=metadata,
         queue_derive=False,
@@ -306,7 +305,7 @@ def upload_item(
 
     print("Uploading original .nfo...")
     response = item.upload_file(
-        nfo_path,
+        str(nfo_path),
         key=nfo_path.name,
         queue_derive=True,
         verify=True,
