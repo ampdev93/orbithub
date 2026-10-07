@@ -108,9 +108,10 @@ def process_nfo(nfo_path: Path, apply: bool) -> tuple[str, str]:
     if len(mp3s) != 1:
         return identifier, f"ambiguous MP3 count: {len(mp3s)}"
 
-    # Existing IA items may use the older filename format. For description
-    # migration, describe the file that is actually present on IA.
-    fields["filename"] = mp3s[0]
+    # Normalize the description to the canonical OrbitHub filename even when
+    # the existing IA item still stores the older MP3 filename.
+    canonical_mp3 = f"{identifier}.mp3"
+    fields["filename"] = canonical_mp3
     desired = build_description(event, fields)
     current = item.metadata.get("description", "")
     diff = meaningful_diff(current, desired)
@@ -118,6 +119,7 @@ def process_nfo(nfo_path: Path, apply: bool) -> tuple[str, str]:
     print(identifier)
     print(f"  NFO       : {nfo_path.name}")
     print(f"  IA MP3    : {mp3s[0]}")
+    print(f"  Canonical : {canonical_mp3}")
 
     if not diff:
         print("  Status    : already normalized")
