@@ -72,12 +72,16 @@ async function renderSets() {
     const events = await loadJson("content/sets.json");
 
     events.forEach(event => {
-        const dateLink = document.createElement("a");
-        dateLink.href = event.flyer;
-        dateLink.target = "_blank";
-        dateLink.rel = "noopener noreferrer";
-        dateLink.textContent = event.display_date || event.date;
-        target.appendChild(dateLink);
+        const date = document.createElement(event.flyer ? "a" : "span");
+        date.textContent = event.display_date || event.date;
+
+        if (event.flyer) {
+            date.href = event.flyer;
+            date.target = "_blank";
+            date.rel = "noopener noreferrer";
+        }
+
+        target.appendChild(date);
         target.appendChild(document.createTextNode(" "));
 
         event.sets.forEach((set, index) => {
