@@ -275,6 +275,22 @@ def print_preview(
     print()
 
 
+
+def remote_file_names(item) -> set[str]:
+    names: set[str] = set()
+
+    for entry in item.files:
+        if isinstance(entry, dict):
+            name = entry.get("name")
+        else:
+            name = getattr(entry, "name", None)
+
+        if name:
+            names.add(name)
+
+    return names
+
+
 def upload_item(
     identifier: str,
     nfo_path: Path,
@@ -291,7 +307,7 @@ def upload_item(
     item = internetarchive.get_item(identifier)
 
     if item.exists:
-        remote_names = {file.name for file in item.files}
+        remote_names = remote_file_names(item)
         if fields["filename"] in remote_names:
             raise RuntimeError(
                 f"Internet Archive item already contains {fields['filename']}: {identifier}\n"
@@ -338,7 +354,7 @@ def upload_item(
 
     for attempt in range(1, verification_attempts + 1):
         refreshed = internetarchive.get_item(identifier)
-        remote_names = {file.name for file in refreshed.files}
+        remote_names = remote_file_names(refreshed)
         missing = expected - remote_names
 
         if not missing:
