@@ -195,6 +195,64 @@ The upload process must:
 7. verify the MP3 exists on IA
 8. print the final item and direct audio URLs
 
+## Existing-item and rerun behavior
+
+Archive operations must be safe to rerun. Existing Internet Archive data must never be overwritten or deleted merely because a bulk job is run again.
+
+For each canonical identifier:
+
+```text
+identifier not found
+    → NEW
+    → eligible for upload
+
+identifier exists + canonical MP3 exists + metadata is correct
+    → VALID EXISTING
+    → SKIP
+
+identifier exists + canonical MP3 exists + metadata needs normalization
+    → METADATA MIGRATION
+    → update metadata only after dry-run review
+
+identifier exists + only legacy MP3 filename exists
+    → LEGACY MIGRATION
+    → preserve existing item
+    → upload canonical MP3
+    → verify canonical MP3
+    → normalize metadata
+    → verify metadata
+    → retain legacy MP3 unless a separate cleanup step is explicitly approved
+
+identifier exists but files/metadata do not match the expected set
+    → CONFLICT
+    → STOP and report
+    → do not upload, overwrite or delete anything
+```
+
+Rules:
+
+- bulk upload tools must be idempotent where practical
+- an already-valid canonical item is a successful skip, not an error
+- existing IA identifiers must not be recreated or replaced automatically
+- existing IA files must not be overwritten automatically
+- legacy files must not be deleted as part of upload or migration
+- deletion/cleanup is a separate destructive operation requiring explicit review and approval
+- ambiguous or conflicting matches must stop for that item and be reported
+- rerunning a completed batch must not damage or duplicate completed items
+
+A bulk run should report a clear status for every item, for example:
+
+```text
+NEW
+SKIPPED
+MIGRATION REQUIRED
+UPDATED
+CONFLICT
+ERROR
+```
+
+The dry run must make the intended action visible before any mutation occurs.
+
 ## Existing IA items
 
 Existing items must be inventoried before mutation.
@@ -232,10 +290,12 @@ update normalized description
     ↓
 verify description
     ↓
-remove legacy MP3 filename only after verification
+retain legacy MP3 filename
 ```
 
-Do not delete and recreate whole IA items unless identifier reuse has been explicitly tested and there is a concrete reason to do so.
+Legacy MP3 files are not deleted during migration. Any later cleanup is a separate destructive step requiring explicit review and approval.
+
+Do not delete and recreate whole IA items unless identifier reuse has been explicitly tested, there is a concrete reason to do so, and the destructive operation has been explicitly approved.
 
 ## Description editing
 
