@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 """Prepare and upload one OrbitHub audio item to Internet Archive.
 
+The .nfo is used only as local source metadata and is not uploaded.
+
 Default behaviour is a dry run. Nothing is uploaded unless --upload is supplied.
 
 Requires:
@@ -240,7 +242,6 @@ def build_metadata(
             f"The Orbit - {event['display_date']} - "
             f"File {event['file_number']} of {event['file_total']} - {fields['djs_file']}"
         ),
-        "creator": fields["djs_file"],
         "date": event_date_iso(event["display_date"]),
         "description": description,
         "subject": ["The Orbit", "Techno", "DJ Set"],
@@ -259,9 +260,7 @@ def print_preview(
     print(f"Identifier : {identifier}")
     print(f"Audio      : {audio_path}")
     print(f"Remote name: {fields['filename']}")
-    print(f"NFO        : {nfo_path}")
     print(f"Title      : {metadata['title']}")
-    print(f"Creator    : {metadata['creator']}")
     print(f"Date       : {metadata['date']}")
     print()
     print("Description")
@@ -303,21 +302,10 @@ def upload_item(
     )
     response.raise_for_status()
 
-    print("Uploading original .nfo...")
-    response = item.upload_file(
-        str(nfo_path),
-        key=nfo_path.name,
-        queue_derive=True,
-        verify=True,
-        retries=10,
-        verbose=True,
-    )
-    response.raise_for_status()
-
     refreshed = internetarchive.get_item(identifier)
     remote_names = {file.name for file in refreshed.files}
 
-    expected = {fields["filename"], nfo_path.name}
+    expected = {fields["filename"]}
     missing = expected - remote_names
     if missing:
         raise RuntimeError(
@@ -348,6 +336,7 @@ def main() -> int:
     try:
         text = read_nfo(args.nfo)
         event, fields = parse_nfo(text)
+        fields["filename"] = args.audio.name
         identifier = args.identifier or build_identifier(event, fields)
         description = build_description(event, fields)
         metadata = build_metadata(identifier, event, fields, description)
