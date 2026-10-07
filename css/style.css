@@ -200,3 +200,45 @@ footer {
         text-align:left;
     }
 }
+
+
+/* Set player */
+
+.set-player-controls {
+    min-height:2rem;
+}
+
+#stop-player {
+    border:1px solid var(--hover);
+    background:transparent;
+    color:var(--text);
+    font:inherit;
+    padding:0.25rem 0.5rem;
+    cursor:pointer;
+}
+
+#stop-player:disabled {
+    opacity:0.35;
+    cursor:default;
+}
+
+#player-status {
+    margin-left:0.75rem;
+    color:#888;
+    font-size:0.9rem;
+}
+
+.set-link {
+    display:inline-block;
+    padding:0.1rem 0.25rem;
+    text-decoration:none;
+}
+
+.set-link.loading,
+.set-link.playing {
+    background:var(--panel);
+}
+
+.set-link.playing {
+    font-weight:600;
+}
