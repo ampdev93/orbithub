@@ -1,3 +1,6 @@
+let activeSetLink = null;
+let activeSetLabel = "";
+
 async function fetchResource(url, type = "text") {
     const response = await fetch(url);
 
@@ -86,10 +89,17 @@ async function renderSets() {
 
         event.sets.forEach((set, index) => {
             const setLink = document.createElement("a");
+            const label = `${set.number}. ${set.artist}`;
+
             setLink.href = "#";
-            setLink.textContent = `${set.number}. ${set.artist}`;
+            setLink.className = "set-link";
+            setLink.dataset.label = label;
+            setLink.textContent = label;
+            setLink.setAttribute("aria-label", `Play ${label}`);
+
             setLink.addEventListener("click", event => {
                 event.preventDefault();
+                selectSet(setLink, label);
                 playSet(set.audio);
             });
 
@@ -153,6 +163,46 @@ async function renderLinks() {
     });
 }
 
+function setPlayerState(state) {
+    const stop = document.getElementById("stop-player");
+    const status = document.getElementById("player-status");
+
+    if (!activeSetLink || !stop || !status) {
+        return;
+    }
+
+    activeSetLink.classList.remove("loading", "playing");
+
+    if (state === "loading") {
+        activeSetLink.classList.add("loading");
+        activeSetLink.textContent = `… ${activeSetLabel}`;
+        status.textContent = "Loading";
+        stop.disabled = false;
+    } else if (state === "playing") {
+        activeSetLink.classList.add("playing");
+        activeSetLink.textContent = `▶ ${activeSetLabel}`;
+        status.textContent = "Playing";
+        stop.disabled = false;
+    } else {
+        activeSetLink.textContent = activeSetLabel;
+        status.textContent = "";
+        stop.disabled = true;
+        activeSetLink = null;
+        activeSetLabel = "";
+    }
+}
+
+function selectSet(link, label) {
+    if (activeSetLink && activeSetLink !== link) {
+        activeSetLink.classList.remove("loading", "playing");
+        activeSetLink.textContent = activeSetLabel;
+    }
+
+    activeSetLink = link;
+    activeSetLabel = label;
+    setPlayerState("loading");
+}
+
 function setupPlayerControls() {
     const stop = document.getElementById("stop-player");
     const player = document.getElementById("player");
@@ -161,9 +211,53 @@ function setupPlayerControls() {
         return;
     }
 
-    stop.addEventListener("click", event => {
-        event.preventDefault();
+    stop.addEventListener("click", () => {
         player.pause();
+        player.removeAttribute("src");
+        player.load();
+
+        if (activeSetLink) {
+            setPlayerState("stopped");
+        }
+    });
+
+    player.addEventListener("loadstart", () => {
+        if (activeSetLink) {
+            setPlayerState("loading");
+        }
+    });
+
+    player.addEventListener("waiting", () => {
+        if (activeSetLink) {
+            setPlayerState("loading");
+        }
+    });
+
+    player.addEventListener("playing", () => {
+        if (activeSetLink) {
+            setPlayerState("playing");
+        }
+    });
+
+    player.addEventListener("ended", () => {
+        if (activeSetLink) {
+            setPlayerState("stopped");
+        }
+    });
+
+    player.addEventListener("error", () => {
+        const status = document.getElementById("player-status");
+
+        if (status) {
+            status.textContent = "Audio error";
+        }
+
+        if (activeSetLink) {
+            activeSetLink.classList.remove("loading", "playing");
+            activeSetLink.textContent = activeSetLabel;
+        }
+
+        stop.disabled = true;
     });
 }
 
