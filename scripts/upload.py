@@ -24,7 +24,10 @@ import argparse
 import html
 import re
 import sys
+import time
 from pathlib import Path
+
+import requests
 
 try:
     import internetarchive
@@ -288,22 +291,45 @@ def upload_item(
     item = internetarchive.get_item(identifier)
 
     if item.exists:
-        raise RuntimeError(
-            f"Internet Archive item already exists: {identifier}\n"
-            "Refusing to overwrite an existing item."
+        remote_names = {file.name for file in item.files}
+        if fields["filename"] in remote_names:
+            raise RuntimeError(
+                f"Internet Archive item already contains {fields['filename']}: {identifier}\n"
+                "Refusing to overwrite an existing audio file."
+            )
+        print(
+            f"Internet Archive item already exists but audio is absent: {identifier}\n"
+            "Continuing upload to the existing item."
         )
 
     print(f"Uploading audio to {identifier}...")
-    response = item.upload_file(
-        str(audio_path),
-        key=fields["filename"],
-        metadata=metadata,
-        queue_derive=False,
-        verify=True,
-        retries=10,
-        verbose=True,
-    )
-    response.raise_for_status()
+    transport_retries = 5
+
+    for attempt in range(1, transport_retries + 1):
+        try:
+            response = item.upload_file(
+                str(audio_path),
+                key=fields["filename"],
+                metadata=metadata,
+                queue_derive=False,
+                verify=True,
+                retries=10,
+                verbose=True,
+            )
+            response.raise_for_status()
+            break
+        except requests.exceptions.RequestException as error:
+            if attempt == transport_retries:
+                raise RuntimeError(
+                    f"Upload failed after {transport_retries} connection retries: {error}"
+                ) from error
+
+            delay = 30
+            print(
+                f"Connection to Internet Archive failed ({attempt}/{transport_retries}). "
+                f"Retrying in {delay} seconds..."
+            )
+            time.sleep(delay)
 
     refreshed = internetarchive.get_item(identifier)
     remote_names = {file.name for file in refreshed.files}
