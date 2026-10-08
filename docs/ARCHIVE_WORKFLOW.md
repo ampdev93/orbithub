@@ -390,12 +390,14 @@ Before an archive item is considered complete, verify:
 - [ ] IA description filename matches the canonical basename
 - [ ] IA description shows `Source: DAT`
 - [ ] IA description shows `Files in set: N`
-- [ ] direct IA MP3 URL works
+- [ ] direct IA MP3 URL works (HTTP 200 or 206)
 - [ ] `content/sets.json` uses the canonical direct URL
 - [ ] OrbitHub player loads and plays the set
 - [ ] no legacy filename remains in the active website content
 
 Only after every applicable check passes is the item complete.
+
+For direct-audio verification, use a byte-range GET rather than relying on HEAD. HTTP 200 or 206 is a pass. A 404 indicates a likely filename/path mismatch and must be investigated. HTTP 503, connection reset, TLS timeout or read timeout are transient IA/CDN failures: report the item as verification pending and retry later; do not mutate metadata or revert to a legacy filename solely because of a transient availability failure.
 
 ## Permanent workflow
 
