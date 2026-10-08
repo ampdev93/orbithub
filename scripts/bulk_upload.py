@@ -49,8 +49,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--delay",
         type=int,
-        default=90,
-        help="Seconds to wait between successful submissions (default: 90).",
+        default=300,
+        help="Seconds to wait between successful submissions (default: 300).",
     )
     parser.add_argument(
         "--identifier",
@@ -197,13 +197,16 @@ def main() -> int:
                 if result.returncode == 0:
                     status = "SUBMITTED"
                     successful_submissions += 1
-                    if args.delay and successful_submissions:
-                        remaining_candidates = any(
-                            path != nfo_path for path in files[files.index(nfo_path) + 1 :]
-                        )
-                        if remaining_candidates:
-                            print(f"  Throttle: waiting {args.delay}s before next item...")
-                            time.sleep(args.delay)
+                    remaining_candidates = files.index(nfo_path) < len(files) - 1
+                    if args.delay and remaining_candidates:
+                        print(f"  Throttle: waiting {args.delay}s before next item...")
+                        time.sleep(args.delay)
+                elif result.returncode == 2:
+                    status = "ERROR"
+                    counts[status] += 1
+                    print("  Rate limit detected. Stopping the batch immediately.")
+                    print()
+                    break
                 else:
                     status = "ERROR"
             elif status in {"PENDING", "CONFLICT"}:
