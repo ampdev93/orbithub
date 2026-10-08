@@ -10,11 +10,12 @@ For each local canonical MP3/NFO pair:
 - derive canonical identifier
 - inspect existing IA item
 - skip already-canonical items
-- upload canonical MP3 if only a legacy MP3 exists
-- verify canonical MP3 exists
-- update canonical title and description only if needed
-- verify title and description
+- submit canonical MP3 if only a legacy MP3 exists
+- submit canonical title and description only if needed
+- continue immediately without waiting for IA propagation
 - retain all legacy MP3 files
+
+Verification is performed separately with scripts/inventory.py.
 
 Usage:
     python3 scripts/migrate_ia.py
@@ -75,48 +76,6 @@ def remote_file_names(item) -> set[str]:
         if name:
             names.add(name)
     return names
-
-
-def verify_remote_file(identifier: str, filename: str) -> bool:
-    attempts = 12
-    delay = 10
-
-    for attempt in range(1, attempts + 1):
-        item = internetarchive.get_item(identifier)
-        if filename in remote_file_names(item):
-            return True
-
-        if attempt < attempts:
-            print(
-                f"    waiting for IA file listing ({attempt}/{attempts})..."
-            )
-            time.sleep(delay)
-
-    return False
-
-
-def verify_metadata(identifier: str, desired_title: str, desired_description: str) -> bool:
-    attempts = 12
-    delay = 10
-
-    for attempt in range(1, attempts + 1):
-        item = internetarchive.get_item(identifier)
-        current_title = item.metadata.get("title", "")
-        current_description = item.metadata.get("description", "")
-        if (
-            current_title == desired_title
-            and normalize_html(current_description)
-            == normalize_html(desired_description)
-        ):
-            return True
-
-        if attempt < attempts:
-            print(
-                f"    waiting for IA metadata refresh ({attempt}/{attempts})..."
-            )
-            time.sleep(delay)
-
-    return False
 
 
 def upload_canonical_mp3(item, audio_path: Path, filename: str) -> None:
@@ -254,13 +213,7 @@ def apply_item(info: dict[str, object]) -> str:
     if not info["canonical_present"]:
         print("  Uploading canonical MP3...")
         upload_canonical_mp3(item, audio_path, canonical_mp3)
-
-        if not verify_remote_file(identifier, canonical_mp3):
-            raise RuntimeError(
-                "canonical MP3 upload was accepted but verification timed out"
-            )
-
-        print("  Canonical MP3 verified.")
+        print("  Canonical MP3 submission accepted.")
 
     refreshed = internetarchive.get_item(identifier)
     current_title = refreshed.metadata.get("title", "")
@@ -285,14 +238,9 @@ def apply_item(info: dict[str, object]) -> str:
         if status_code is not None and not (200 <= int(status_code) < 300):
             raise RuntimeError(f"metadata update failed: {result}")
 
-        if not verify_metadata(identifier, desired_title, desired_description):
-            raise RuntimeError(
-                "metadata update was accepted but verification timed out"
-            )
+        print("  Metadata submission accepted.")
 
-        print("  Title and description verified.")
-
-    return "UPDATED"
+    return "SUBMITTED"
 
 
 def main() -> int:
@@ -353,6 +301,7 @@ def main() -> int:
     print()
     if args.apply:
         print("No legacy IA files were deleted.")
+        print("Run scripts/inventory.py later to verify IA propagation.")
     else:
         print("DRY RUN: no Internet Archive data was changed.")
 
