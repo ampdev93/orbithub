@@ -6,32 +6,32 @@
       {
         "number": 1,
         "artist": "Nigel Walker",
-        "audio": "https://archive.org/download/orbit-19940723-1-nigel-walker/orbit-19940723-1 (nigel walker).mp3"
+        "audio": "https://archive.org/download/orbit-19940723-1-nigel-walker/orbit-19940723-1-nigel-walker.mp3"
       },
       {
         "number": 2,
         "artist": "John Berry",
-        "audio": "https://archive.org/download/orbit-19940723-2-john-berry/orbit-19940723-2 (john berry).mp3"
+        "audio": "https://archive.org/download/orbit-19940723-2-john-berry/orbit-19940723-2-john-berry.mp3"
       },
       {
         "number": 3,
         "artist": "John Berry",
-        "audio": "https://archive.org/download/orbit-19940723-3-john-berry/orbit-19940723-3 (john berry).mp3"
+        "audio": "https://archive.org/download/orbit-19940723-3-john-berry/orbit-19940723-3-john-berry.mp3"
       },
       {
         "number": 4,
         "artist": "Stuart McMillan",
-        "audio": "https://archive.org/download/orbit-19940723-4-stuart-mcmillan/orbit-19940723-4 (stuart mcmillan).mp3"
+        "audio": "https://archive.org/download/orbit-19940723-4-stuart-mcmillan/orbit-19940723-4-stuart-mcmillan.mp3"
       },
       {
         "number": 5,
         "artist": "Stuart McMillan",
-        "audio": "https://archive.org/download/orbit-19940723-5-stuart-mcmillan/orbit-19940723-5 (stuart mcmillan).mp3"
+        "audio": "https://archive.org/download/orbit-19940723-5-stuart-mcmillan/orbit-19940723-5-stuart-mcmillan.mp3"
       },
       {
         "number": 6,
         "artist": "Joey Beltram",
-        "audio": "https://archive.org/download/orbit-19940723-6-joey-beltram/orbit-19940723-6 (joey beltram).mp3"
+        "audio": "https://archive.org/download/orbit-19940723-6-joey-beltram/orbit-19940723-6-joey-beltram.mp3"
       }
     ]
   },
@@ -42,32 +42,43 @@
       {
         "number": 1,
         "artist": "Nigel Walker, John Berry",
-        "audio": "https://archive.org/download/orbit-19941001-1-nigel-walker-john-berry/orbit-19941001-1 (nigel walker, john berry).mp3"
+        "audio": "https://archive.org/download/orbit-19941001-1-nigel-walker-john-berry/orbit-19941001-1-nigel-walker-john-berry.mp3"
       },
       {
         "number": 2,
         "artist": "Nigel Walker, John Berry",
-        "audio": "https://archive.org/download/orbit-19941001-2-nigel-walker-john-berry/orbit-19941001-2 (nigel walker, john berry).mp3"
+        "audio": "https://archive.org/download/orbit-19941001-2-nigel-walker-john-berry/orbit-19941001-2-nigel-walker-john-berry.mp3"
       },
       {
         "number": 3,
         "artist": "John Berry, Salt Tank, Colin Dale",
-        "audio": "https://archive.org/download/orbit-19941001-3-john-berry-salt-tank-colin-dale/orbit-19941001-3 (john berry, salt tank, colin dale).mp3"
+        "audio": "https://archive.org/download/orbit-19941001-3-john-berry-salt-tank-colin-dale/orbit-19941001-3-john-berry-salt-tank-colin-dale.mp3"
       },
       {
         "number": 4,
         "artist": "John Berry, Salt Tank, Colin Dale",
-        "audio": "https://archive.org/download/orbit-19941001-4-john-berry-salt-tank-colin-dale/orbit-19941001-4 (john berry, salt tank, colin dale).mp3"
+        "audio": "https://archive.org/download/orbit-19941001-4-john-berry-salt-tank-colin-dale/orbit-19941001-4-john-berry-salt-tank-colin-dale.mp3"
       },
       {
         "number": 5,
         "artist": "Colin Dale",
-        "audio": "https://archive.org/download/orbit-19941001-5-colin-dale/orbit-19941001-5 (colin dale).mp3"
+        "audio": "https://archive.org/download/orbit-19941001-5-colin-dale/orbit-19941001-5-colin-dale.mp3"
       },
       {
         "number": 6,
         "artist": "Colin Dale",
-        "audio": "https://archive.org/download/orbit-19941001-6-colin-dale/orbit-19941001-6 (colin dale).mp3"
+        "audio": "https://archive.org/download/orbit-19941001-6-colin-dale/orbit-19941001-6-colin-dale.mp3"
+      }
+    ]
+  },
+  {
+    "date": "1994-12-31",
+    "display_date": "31/12/1994",
+    "sets": [
+      {
+        "number": 1,
+        "artist": "Nigel Walker",
+        "audio": "https://archive.org/download/orbit-19941231-1-nigel-walker/orbit-19941231-1-nigel-walker.mp3"
       }
     ]
   }
