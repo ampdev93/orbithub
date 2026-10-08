@@ -403,6 +403,19 @@ def upload_item(
                 response.raise_for_status()
                 break
             except requests.exceptions.RequestException as error:
+                error_text = str(error).lower()
+                rate_limited = (
+                    "please reduce your request rate" in error_text
+                    or "appears to be spam" in error_text
+                )
+
+                if rate_limited:
+                    raise RuntimeError(
+                        "Internet Archive rate limit/spam protection triggered; "
+                        "stopping this item without immediate retries: "
+                        f"{error}"
+                    ) from error
+
                 if attempt == transport_retries:
                     raise RuntimeError(
                         f"Upload failed after {transport_retries} connection retries: {error}"
