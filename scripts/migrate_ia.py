@@ -232,13 +232,23 @@ def apply_item(info: dict[str, object]) -> str:
         print(f"  Updating {changed}...")
         result = refreshed.modify_metadata(metadata_update)
 
-        status_code = (
-            result.get("status_code") if isinstance(result, dict) else None
-        )
-        if status_code is not None and not (200 <= int(status_code) < 300):
-            raise RuntimeError(f"metadata update failed: {result}")
+        try:
+            result.raise_for_status()
+        except requests.exceptions.RequestException as error:
+            status_code = getattr(result, "status_code", "unknown")
+            response_text = getattr(result, "text", "")
+            if response_text:
+                response_text = response_text.strip().replace("\n", " ")
+                if len(response_text) > 500:
+                    response_text = response_text[:500] + "..."
+            detail = f"HTTP {status_code}"
+            if response_text:
+                detail += f": {response_text}"
+            raise RuntimeError(
+                f"metadata update failed ({detail})"
+            ) from error
 
-        print("  Metadata submission accepted.")
+        print(f"  Metadata submission accepted (HTTP {result.status_code}).")
 
     return "SUBMITTED"
 
