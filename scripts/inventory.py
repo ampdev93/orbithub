@@ -24,6 +24,7 @@ import json
 import sys
 from pathlib import Path
 from urllib.parse import unquote, urlparse
+from urllib.request import Request, urlopen
 
 try:
     import internetarchive
@@ -57,6 +58,17 @@ def parse_args() -> argparse.Namespace:
         type=Path,
         default=Path("content/sets.json"),
         help="OrbitHub website sets JSON.",
+    )
+    parser.add_argument(
+        "--check-audio",
+        action="store_true",
+        help="Verify canonical direct MP3 URLs with a one-byte range GET.",
+    )
+    parser.add_argument(
+        "--audio-timeout",
+        type=float,
+        default=30.0,
+        help="Timeout in seconds for each direct MP3 verification request.",
     )
     return parser.parse_args()
 
@@ -105,6 +117,22 @@ def load_website_urls(path: Path) -> dict[str, list[str]]:
     return result
 
 
+def check_audio_url(url: str, timeout: float) -> str:
+    if not url or url == "-":
+        return "not checked"
+
+    request = Request(url, headers={"Range": "bytes=0-0"})
+
+    try:
+        with urlopen(request, timeout=timeout) as response:
+            status = getattr(response, "status", None)
+            if status in (200, 206):
+                return f"available ({status})"
+            return f"unexpected HTTP {status}"
+    except Exception as error:
+        return f"pending ({error})"
+
+
 def report_website_only_items(
     local_identifiers: set[str],
     website_urls: dict[str, list[str]],
@@ -130,6 +158,7 @@ def report_website_only_items(
                 "description": "not checked",
                 "website": "present",
                 "website_url": " | ".join(urls),
+                "audio_url": "not checked",
                 "status": "ERROR",
                 "note": "website/IA item has no matching local MP3/NFO pair",
             }
@@ -192,6 +221,9 @@ def classify(
 def inspect_pair(
     nfo_path: Path,
     website_urls: dict[str, list[str]],
+    *,
+    check_audio: bool = False,
+    audio_timeout: float = 30.0,
 ) -> dict[str, object]:
     row: dict[str, object] = {
         "nfo": nfo_path.name,
@@ -209,6 +241,7 @@ def inspect_pair(
         "description": "-",
         "website": "-",
         "website_url": "-",
+        "audio_url": "not checked",
         "status": "ERROR",
         "note": "",
     }
@@ -286,6 +319,8 @@ def inspect_pair(
         )
         row["website"] = web_state
         row["website_url"] = web_url
+        if check_audio and web_state == "canonical":
+            row["audio_url"] = check_audio_url(web_url, audio_timeout)
 
         row["status"] = classify(
             local_pair_ok=local_pair_ok,
@@ -331,6 +366,7 @@ def print_row(row: dict[str, object]) -> None:
     print(f"  Description : {row['description']}")
     print(f"  Website     : {row['website']}")
     print(f"  Website URL : {row['website_url']}")
+    print(f"  Audio URL   : {row['audio_url']}")
     if row["note"]:
         print(f"  Note        : {row['note']}")
     print()
@@ -366,9 +402,18 @@ def main() -> int:
     print(f"Local source : {args.directory}")
     print(f"Website data : {args.sets_json}")
     print("Mode         : READ ONLY")
+    print(f"Audio check  : {'enabled' if args.check_audio else 'disabled'}")
     print()
 
-    rows = [inspect_pair(path, website_urls) for path in nfo_files]
+    rows = [
+        inspect_pair(
+            path,
+            website_urls,
+            check_audio=args.check_audio,
+            audio_timeout=args.audio_timeout,
+        )
+        for path in nfo_files
+    ]
 
     local_identifiers = {
         str(row["identifier"])
@@ -394,6 +439,17 @@ def main() -> int:
 
     print()
     print("READ ONLY: no local or Internet Archive data was changed.")
+    if args.check_audio:
+        available = sum(
+            str(row.get("audio_url", "")).startswith("available")
+            for row in rows
+        )
+        pending = sum(
+            str(row.get("audio_url", "")).startswith(("pending", "unexpected"))
+            for row in rows
+        )
+        print(f"Audio available      : {available}/{len(rows)}")
+        print(f"Audio verify pending : {pending}")
 
     if unresolved:
         print(
