@@ -81,5 +81,88 @@
         "audio": "https://archive.org/download/orbit-19941231-1-nigel-walker/orbit-19941231-1-nigel-walker.mp3"
       }
     ]
+  },
+  {
+    "date": "1995-01-14",
+    "display_date": "14/01/1995",
+    "sets": [
+      {
+        "number": 1,
+        "artist": "Nigel Walker",
+        "audio": "https://archive.org/download/orbit-19950114-1-nigel-walker/orbit-19950114-1-nigel-walker.mp3"
+      },
+      {
+        "number": 2,
+        "artist": "John Berry",
+        "audio": "https://archive.org/download/orbit-19950114-2-john-berry/orbit-19950114-2-john-berry.mp3"
+      },
+      {
+        "number": 3,
+        "artist": "John Berry",
+        "audio": "https://archive.org/download/orbit-19950114-3-john-berry/orbit-19950114-3-john-berry.mp3"
+      },
+      {
+        "number": 4,
+        "artist": "Kid Paul",
+        "audio": "https://archive.org/download/orbit-19950114-4-kid-paul/orbit-19950114-4-kid-paul.mp3"
+      },
+      {
+        "number": 5,
+        "artist": "Kid Paul",
+        "audio": "https://archive.org/download/orbit-19950114-5-kid-paul/orbit-19950114-5-kid-paul.mp3"
+      }
+    ]
+  },
+  {
+    "date": "1995-01-28",
+    "display_date": "28/01/1995",
+    "sets": [
+      {
+        "number": 1,
+        "artist": "Joey Beltram",
+        "audio": "https://archive.org/download/orbit-19950128-1-joey-beltram/orbit-19950128-1-joey-beltram.mp3"
+      },
+      {
+        "number": 2,
+        "artist": "Joey Beltram",
+        "audio": "https://archive.org/download/orbit-19950128-2-joey-beltram/orbit-19950128-2-joey-beltram.mp3"
+      }
+    ]
+  },
+  {
+    "date": "1995-07-01",
+    "display_date": "01/07/1995",
+    "sets": [
+      {
+        "number": 1,
+        "artist": "John Berry",
+        "audio": "https://archive.org/download/orbit-19950701-1-john-berry/orbit-19950701-1-john-berry.mp3"
+      },
+      {
+        "number": 2,
+        "artist": "Sven Vath",
+        "audio": "https://archive.org/download/orbit-19950701-2-sven-vath/orbit-19950701-2-sven-vath.mp3"
+      },
+      {
+        "number": 3,
+        "artist": "Sven Vath",
+        "audio": "https://archive.org/download/orbit-19950701-3-sven-vath/orbit-19950701-3-sven-vath.mp3"
+      },
+      {
+        "number": 4,
+        "artist": "Sven Vath",
+        "audio": "https://archive.org/download/orbit-19950701-4-sven-vath/orbit-19950701-4-sven-vath.mp3"
+      },
+      {
+        "number": 5,
+        "artist": "Sven Vath",
+        "audio": "https://archive.org/download/orbit-19950701-5-sven-vath/orbit-19950701-5-sven-vath.mp3"
+      },
+      {
+        "number": 6,
+        "artist": "Sven Vath",
+        "audio": "https://archive.org/download/orbit-19950701-6-sven-vath/orbit-19950701-6-sven-vath.mp3"
+      }
+    ]
   }
 ]
