@@ -11,6 +11,7 @@ from __future__ import annotations
 import argparse
 import subprocess
 import sys
+import time
 from pathlib import Path
 
 try:
@@ -44,6 +45,18 @@ def parse_args() -> argparse.Namespace:
         type=int,
         default=None,
         help="Inspect at most this many pairs.",
+    )
+    parser.add_argument(
+        "--delay",
+        type=int,
+        default=90,
+        help="Seconds to wait between successful submissions (default: 90).",
+    )
+    parser.add_argument(
+        "--identifier",
+        action="append",
+        default=[],
+        help="Restrict processing to this canonical identifier. Repeat for multiple items.",
     )
     return parser.parse_args()
 
@@ -132,8 +145,23 @@ def main() -> int:
     if args.limit is not None and args.limit < 1:
         print("ERROR: --limit must be >= 1", file=sys.stderr)
         return 1
+    if args.delay < 0:
+        print("ERROR: --delay must be >= 0", file=sys.stderr)
+        return 1
 
     files = sorted(args.directory.glob("*.nfo"))
+    if args.identifier:
+        wanted = set(args.identifier)
+        files = [path for path in files if path.stem in wanted]
+        found = {path.stem for path in files}
+        missing = sorted(wanted - found)
+        if missing:
+            print(
+                "ERROR: requested identifier(s) not found locally: "
+                + ", ".join(missing),
+                file=sys.stderr,
+            )
+            return 1
     if args.limit is not None:
         files = files[: args.limit]
     if not files:
@@ -145,9 +173,14 @@ def main() -> int:
     print(f"Mode      : {'APPLY' if args.apply else 'DRY RUN'}")
     print("Deletion  : DISABLED")
     print("Overwrite : DISABLED")
+    print(f"Delay     : {args.delay}s between successful submissions")
+    if args.identifier:
+        print(f"Selected  : {len(args.identifier)} identifier(s)")
     print()
 
     counts = {"NEW": 0, "SKIPPED": 0, "PENDING": 0, "SUBMITTED": 0, "CONFLICT": 0, "ERROR": 0}
+
+    successful_submissions = 0
 
     for nfo_path in files:
         try:
@@ -163,6 +196,14 @@ def main() -> int:
                 )
                 if result.returncode == 0:
                     status = "SUBMITTED"
+                    successful_submissions += 1
+                    if args.delay and successful_submissions:
+                        remaining_candidates = any(
+                            path != nfo_path for path in files[files.index(nfo_path) + 1 :]
+                        )
+                        if remaining_candidates:
+                            print(f"  Throttle: waiting {args.delay}s before next item...")
+                            time.sleep(args.delay)
                 else:
                     status = "ERROR"
             elif status in {"PENDING", "CONFLICT"}:
