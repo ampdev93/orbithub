@@ -61,7 +61,7 @@ def remote_names(item) -> set[str]:
     return result
 
 
-def inspect(nfo_path: Path) -> tuple[str, str, Path, str]:
+def inspect(nfo_path: Path) -> tuple[str, str, Path, str, str]:
     event, fields = parse_nfo(read_nfo(nfo_path))
     identifier = build_identifier(event, fields)
     audio_path = nfo_path.with_suffix(".mp3")
@@ -81,21 +81,43 @@ def inspect(nfo_path: Path) -> tuple[str, str, Path, str]:
 
     item = internetarchive.get_item(identifier)
     if not item.exists:
-        return identifier, "NEW", audio_path, str(metadata["title"])
+        return identifier, "NEW", audio_path, str(metadata["title"]), "identifier not present on IA"
 
     names = remote_names(item)
     current_title = item.metadata.get("title", "")
     current_description = item.metadata.get("description", "")
 
-    if (
-        canonical_mp3 in names
-        and current_title == metadata["title"]
-        and normalize_html(current_description)
+    title_matches = current_title == metadata["title"]
+    description_matches = (
+        normalize_html(current_description)
         == normalize_html(str(metadata["description"]))
-    ):
-        return identifier, "SKIPPED", audio_path, str(metadata["title"])
+    )
 
-    return identifier, "CONFLICT", audio_path, str(metadata["title"])
+    if canonical_mp3 in names and title_matches and description_matches:
+        return (
+            identifier,
+            "SKIPPED",
+            audio_path,
+            str(metadata["title"]),
+            "existing canonical IA item is complete",
+        )
+
+    if not names or not canonical_mp3 in names:
+        return (
+            identifier,
+            "PENDING",
+            audio_path,
+            str(metadata["title"]),
+            "IA item exists but canonical MP3 is not visible yet; treat as propagation pending",
+        )
+
+    return (
+        identifier,
+        "CONFLICT",
+        audio_path,
+        str(metadata["title"]),
+        "existing IA item differs from canonical metadata",
+    )
 
 
 def main() -> int:
@@ -125,13 +147,14 @@ def main() -> int:
     print("Overwrite : DISABLED")
     print()
 
-    counts = {"NEW": 0, "SKIPPED": 0, "SUBMITTED": 0, "CONFLICT": 0, "ERROR": 0}
+    counts = {"NEW": 0, "SKIPPED": 0, "PENDING": 0, "SUBMITTED": 0, "CONFLICT": 0, "ERROR": 0}
 
     for nfo_path in files:
         try:
-            identifier, status, audio_path, title = inspect(nfo_path)
+            identifier, status, audio_path, title, note = inspect(nfo_path)
             print(f"[{status}] {identifier}")
             print(f"  Title : {title}")
+            print(f"  Note  : {note}")
 
             if status == "NEW" and args.apply:
                 result = subprocess.run(
@@ -142,7 +165,7 @@ def main() -> int:
                     status = "SUBMITTED"
                 else:
                     status = "ERROR"
-            elif status == "CONFLICT":
+            elif status in {"PENDING", "CONFLICT"}:
                 print("  No mutation performed.")
 
             counts[status] += 1
