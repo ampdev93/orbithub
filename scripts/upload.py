@@ -88,6 +88,46 @@ def clean_wrapped_value(value: str) -> str:
     return re.sub(r"\s+", " ", value).strip()
 
 
+def derive_djs_file_from_filename(
+    filename: str,
+    djs_set: str,
+) -> str | None:
+    """Derive missing per-file DJ metadata from the original filename.
+
+    The filename must contain a parenthesized DJ list immediately before .mp3.
+    Casing is recovered only from exact case-insensitive matches in DJ(s) for set;
+    otherwise return None rather than guessing.
+    """
+    match = re.search(r"\(([^()]*)\)\.mp3\s*$", filename, flags=re.IGNORECASE)
+    if not match:
+        return None
+
+    filename_parts = [
+        clean_wrapped_value(part)
+        for part in match.group(1).split(",")
+        if clean_wrapped_value(part)
+    ]
+    set_parts = [
+        clean_wrapped_value(part)
+        for part in djs_set.rstrip(".").split(",")
+        if clean_wrapped_value(part)
+    ]
+
+    if not filename_parts or not set_parts:
+        return None
+
+    set_lookup = {part.casefold(): part for part in set_parts}
+    resolved = []
+
+    for part in filename_parts:
+        canonical = set_lookup.get(part.casefold())
+        if canonical is None:
+            return None
+        resolved.append(canonical)
+
+    return ", ".join(resolved)
+
+
 def parse_nfo(text: str) -> tuple[dict[str, str], dict[str, str]]:
     banner_match = re.search(
         r"Live sets from The Orbit,\s*(\d{2}-\d{2}-\d{2}),\s*File\s+(\d+)\s+of\s+(\d+)\.",
@@ -139,6 +179,14 @@ def parse_nfo(text: str) -> tuple[dict[str, str], dict[str, str]]:
             break
 
     save_current()
+
+    if not fields.get("djs_file") and fields.get("filename") and fields.get("djs_set"):
+        derived_djs = derive_djs_file_from_filename(
+            fields["filename"],
+            fields["djs_set"],
+        )
+        if derived_djs:
+            fields["djs_file"] = derived_djs
 
     required = [
         "filename",
