@@ -334,8 +334,11 @@ def inspect_pair(
         )
         row["website"] = web_state
         row["website_url"] = web_url
-        if check_audio and web_state == "canonical":
-            row["audio_url"] = check_audio_url(web_url, audio_timeout)
+        if check_audio and item_exists and canonical_present:
+            canonical_url = (
+                f"https://archive.org/download/{identifier}/{canonical_mp3}"
+            )
+            row["audio_url"] = check_audio_url(canonical_url, audio_timeout)
 
         row["status"] = classify(
             local_pair_ok=local_pair_ok,
