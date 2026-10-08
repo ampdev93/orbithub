@@ -125,6 +125,8 @@ def report_website_only_items(
                 "ia_exists": True,
                 "ia_mp3": "-",
                 "title": "not checked",
+                "title_current": "-",
+                "title_expected": "-",
                 "description": "not checked",
                 "website": "present",
                 "website_url": " | ".join(urls),
@@ -202,6 +204,8 @@ def inspect_pair(
         "ia_exists": False,
         "ia_mp3": "-",
         "title": "-",
+        "title_current": "-",
+        "title_expected": "-",
         "description": "-",
         "website": "-",
         "website_url": "-",
@@ -264,6 +268,8 @@ def inspect_pair(
             current_title = item.metadata.get("title", "")
             current_description = item.metadata.get("description", "")
             title_matches = current_title == desired_title
+            row["title_current"] = current_title or "-"
+            row["title_expected"] = desired_title
             description_matches = (
                 normalize_html(current_description) == normalize_html(desired)
             )
@@ -271,6 +277,8 @@ def inspect_pair(
             row["description"] = "canonical" if description_matches else "needs update"
         else:
             row["title"] = "not applicable"
+            row["title_current"] = "-"
+            row["title_expected"] = "-"
             row["description"] = "not applicable"
 
         web_state, web_url = website_status(
@@ -317,6 +325,9 @@ def print_row(row: dict[str, object]) -> None:
     print(f"  IA exists   : {'yes' if row['ia_exists'] else 'no'}")
     print(f"  IA MP3      : {row['ia_mp3']}")
     print(f"  Title       : {row['title']}")
+    if row["title"] == "needs update":
+        print(f"  Title now   : {row['title_current']}")
+        print(f"  Title want  : {row['title_expected']}")
     print(f"  Description : {row['description']}")
     print(f"  Website     : {row['website']}")
     print(f"  Website URL : {row['website_url']}")
