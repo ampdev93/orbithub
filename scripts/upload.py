@@ -35,6 +35,10 @@ except ImportError:
     internetarchive = None
 
 
+class RateLimitError(RuntimeError):
+    """Internet Archive rejected the request due to rate limiting/spam protection."""
+
+
 FIELD_MAP = {
     "Filename": "filename",
     "Status": "status",
@@ -410,7 +414,7 @@ def upload_item(
                 )
 
                 if rate_limited:
-                    raise RuntimeError(
+                    raise RateLimitError(
                         "Internet Archive rate limit/spam protection triggered; "
                         "stopping this item without immediate retries: "
                         f"{error}"
@@ -507,6 +511,9 @@ def main() -> int:
         )
         return 0
 
+    except RateLimitError as error:
+        print(f"ERROR: {error}", file=sys.stderr)
+        return 2
     except (ValueError, RuntimeError) as error:
         print(f"ERROR: {error}", file=sys.stderr)
         return 1
