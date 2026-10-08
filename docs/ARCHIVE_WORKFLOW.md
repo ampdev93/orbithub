@@ -204,16 +204,22 @@ Then upload:
 python3 scripts/upload.py work/sets-to-upload/orbit-YYYYMMDD-N-dj-name.mp3 --upload
 ```
 
-The upload process must:
+The upload/migration process is split into submission and verification.
+
+Submission must:
 
 1. derive the matching NFO automatically
 2. verify the local files exist
 3. derive the canonical IA identifier
-4. upload the canonical MP3 filename
-5. apply canonical metadata
-6. handle transient IA/S3 failures
-7. verify the MP3 exists on IA
-8. print the final item and direct audio URLs
+4. submit the canonical MP3 filename when required
+5. submit canonical metadata when required
+6. handle immediate IA/S3 transport failures
+7. record/report the action as submitted
+8. continue to the next item without waiting for IA propagation
+
+Submission success means Internet Archive accepted the request. It does not mean the change has propagated through IA yet.
+
+Verification is a separate read-only pass using `scripts/inventory.py`. This avoids serial propagation waits across large batches.
 
 ## Existing-item and rerun behavior
 
@@ -237,10 +243,10 @@ identifier exists + canonical MP3 exists + metadata needs normalization
 identifier exists + only legacy MP3 filename exists
     → LEGACY MIGRATION
     → preserve existing item
-    → upload canonical MP3
-    → verify canonical MP3
-    → normalize metadata
-    → verify metadata
+    → submit canonical MP3
+    → submit normalized metadata
+    → report SUBMITTED
+    → verify later with inventory.py
     → retain legacy MP3 unless a separate cleanup step is explicitly approved
 
 identifier exists but files/metadata do not match the expected set
@@ -260,13 +266,21 @@ Rules:
 - ambiguous or conflicting matches must stop for that item and be reported
 - rerunning a completed batch must not damage or duplicate completed items
 
-A bulk run should report a clear status for every item, for example:
+A mutation run should report a clear status for every item, for example:
+
+```text
+SKIPPED
+SUBMITTED
+CONFLICT
+ERROR
+```
+
+A verification run may report:
 
 ```text
 NEW
 SKIPPED
 MIGRATION REQUIRED
-UPDATED
 CONFLICT
 ERROR
 ```
@@ -303,16 +317,20 @@ Preferred migration sequence:
 ```text
 existing IA identifier
     ↓
-upload canonical MP3 filename
+submit canonical MP3 filename if needed
     ↓
-verify canonical MP3 exists
+submit canonical title/description if needed
     ↓
-update canonical title and normalized description as needed
+continue immediately to next item
     ↓
-verify title and description
+run inventory.py after the batch
+    ↓
+retry only items still requiring migration
     ↓
 retain legacy MP3 filename
 ```
+
+Do not serialize the batch by waiting for IA propagation after each item. Internet Archive may take several minutes to expose accepted file or metadata changes.
 
 Legacy MP3 files are not deleted during migration. Any later cleanup is a separate destructive step requiring explicit review and approval.
 
@@ -387,10 +405,12 @@ The canonical process is:
 source ZIP
 → extract/normalize
 → verify local pair
-→ upload.py dry run
-→ upload
-→ verify IA
+→ submission dry run
+→ submit uploads/metadata
+→ run read-only inventory verification
+→ retry only outstanding items if required
 → update content/sets.json
+→ final inventory verification
 → local website test
 → merge
 ```
