@@ -135,7 +135,7 @@ def main() -> int:
 
             if status == "NEW" and args.apply:
                 result = subprocess.run(
-                    [sys.executable, "scripts/upload.py", str(audio_path), "--upload"],
+                    [sys.executable, "scripts/upload.py", str(audio_path), "--upload", "--no-wait"],
                     check=False,
                 )
                 if result.returncode == 0:
