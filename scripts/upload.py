@@ -69,6 +69,11 @@ def parse_args() -> argparse.Namespace:
         "--identifier",
         help="Override the generated Internet Archive identifier.",
     )
+    parser.add_argument(
+        "--no-wait",
+        action="store_true",
+        help="Return after IA accepts the upload; verify later with inventory.py.",
+    )
     return parser.parse_args()
 
 
@@ -305,6 +310,8 @@ def upload_item(
     audio_path: Path,
     fields: dict[str, str],
     metadata: dict[str, object],
+    *,
+    wait_for_verification: bool = True,
 ) -> None:
     if internetarchive is None:
         raise RuntimeError(
@@ -359,6 +366,11 @@ def upload_item(
                     f"Retrying in {delay} seconds..."
                 )
                 time.sleep(delay)
+
+    if not wait_for_verification:
+        print()
+        print("Submission accepted; verification deferred to inventory.py.")
+        return
 
     expected = {fields["filename"]}
     verification_attempts = 12
@@ -430,6 +442,7 @@ def main() -> int:
             args.audio,
             fields,
             metadata,
+            wait_for_verification=not args.no_wait,
         )
         return 0
 
