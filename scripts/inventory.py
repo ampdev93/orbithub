@@ -124,6 +124,7 @@ def report_website_only_items(
                 "canonical_mp3": f"{identifier}.mp3",
                 "ia_exists": True,
                 "ia_mp3": "-",
+                "title": "not checked",
                 "description": "not checked",
                 "website": "present",
                 "website_url": " | ".join(urls),
@@ -164,6 +165,7 @@ def classify(
     item_exists: bool,
     canonical_mp3_present: bool,
     legacy_mp3s: list[str],
+    title_matches: bool,
     description_matches: bool,
     website_state: str,
 ) -> str:
@@ -176,10 +178,10 @@ def classify(
     if website_state == "conflict":
         return "CONFLICT"
 
-    if canonical_mp3_present and description_matches and website_state == "canonical":
+    if canonical_mp3_present and title_matches and description_matches and website_state == "canonical":
         return "SKIPPED"
 
-    if canonical_mp3_present or legacy_mp3s or not description_matches:
+    if canonical_mp3_present or legacy_mp3s or not title_matches or not description_matches:
         return "MIGRATION REQUIRED"
 
     return "CONFLICT"
@@ -199,6 +201,7 @@ def inspect_pair(
         "canonical_mp3": "-",
         "ia_exists": False,
         "ia_mp3": "-",
+        "title": "-",
         "description": "-",
         "website": "-",
         "website_url": "-",
@@ -240,6 +243,7 @@ def inspect_pair(
 
         canonical_present = False
         legacy_mp3s: list[str] = []
+        title_matches = False
         description_matches = False
 
         if item_exists:
@@ -249,15 +253,24 @@ def inspect_pair(
             legacy_mp3s = [name for name in mp3_names if name != canonical_mp3]
             row["ia_mp3"] = ", ".join(mp3_names) if mp3_names else "-"
 
+            desired_title = (
+                f"The Orbit - {event['display_date']} - "
+                f"File {event['file_number']} of {event['file_total']} - {fields['djs_file']}"
+            )
             desired_fields = dict(fields)
             desired_fields["filename"] = canonical_mp3
             desired = build_description(event, desired_fields)
-            current = item.metadata.get("description", "")
+
+            current_title = item.metadata.get("title", "")
+            current_description = item.metadata.get("description", "")
+            title_matches = current_title == desired_title
             description_matches = (
-                normalize_html(current) == normalize_html(desired)
+                normalize_html(current_description) == normalize_html(desired)
             )
+            row["title"] = "canonical" if title_matches else "needs update"
             row["description"] = "canonical" if description_matches else "needs update"
         else:
+            row["title"] = "not applicable"
             row["description"] = "not applicable"
 
         web_state, web_url = website_status(
@@ -272,6 +285,7 @@ def inspect_pair(
             item_exists=item_exists,
             canonical_mp3_present=canonical_present,
             legacy_mp3s=legacy_mp3s,
+            title_matches=title_matches,
             description_matches=description_matches,
             website_state=web_state,
         )
@@ -302,6 +316,7 @@ def print_row(row: dict[str, object]) -> None:
     print(f"  Canonical   : {row['canonical_mp3']}")
     print(f"  IA exists   : {'yes' if row['ia_exists'] else 'no'}")
     print(f"  IA MP3      : {row['ia_mp3']}")
+    print(f"  Title       : {row['title']}")
     print(f"  Description : {row['description']}")
     print(f"  Website     : {row['website']}")
     print(f"  Website URL : {row['website_url']}")
