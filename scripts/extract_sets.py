@@ -95,7 +95,8 @@ def build_unverified_identifier(text: str) -> str:
     """
     banner = re.search(
         r"TheOrbituary presents\.\.\.\s*(.+?)\s+live\s+@\s+The Orbit,\s*(?:England,\s*)?"
-        r"(?:(\d{2}-\d{2}-\d{2})(?:,\s*Side\s+([A-Za-z0-9]+))?|(\d{4}))\.",
+        r"(?:(\d{2}-\d{2}-\d{2})|(\d{4})|\[Date Unknown\])"
+        r"(?:,\s*Side\s+([A-Za-z0-9]+))?\.?",
         text,
         flags=re.IGNORECASE,
     )
@@ -104,21 +105,29 @@ def build_unverified_identifier(text: str) -> str:
 
     artist = re.sub(r"\s+", " ", banner.group(1)).strip()
     exact_date = banner.group(2)
-    side = banner.group(3)
-    year_only = banner.group(4)
+    year_only = banner.group(3)
+    side = banner.group(4)
+    date_unknown = "[Date Unknown]" in banner.group(0)
 
     artist_slug = slugify(artist)
     if not artist_slug:
         raise ValueError("Could not derive artist slug from unverified NFO banner.")
 
+    side_part = f"-{slugify(side)}" if side else ""
+
     if exact_date:
         day, month, year = (int(part) for part in exact_date.split("-"))
         full_year = 1900 + year if year >= 91 else 2000 + year
         date_key = f"{full_year:04d}{month:02d}{day:02d}"
-        side_part = f"-{slugify(side)}" if side else ""
         return f"orbit-unverified-{date_key}{side_part}-{artist_slug}"
 
-    return f"orbit-unverified-{year_only}-{artist_slug}"
+    if year_only:
+        return f"orbit-unverified-{year_only}{side_part}-{artist_slug}"
+
+    if date_unknown:
+        return f"orbit-unverified-unknown-{artist_slug}"
+
+    raise ValueError("Could not derive date from unverified NFO banner.")
 
 
 def validate_target(path: Path) -> None:
