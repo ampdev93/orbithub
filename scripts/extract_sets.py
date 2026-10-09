@@ -24,13 +24,14 @@ Default behaviour is a dry run. Use --apply to write files.
 from __future__ import annotations
 
 import argparse
+import re
 import shutil
 import sys
 import tempfile
 import zipfile
 from pathlib import Path
 
-from upload import build_identifier, parse_nfo, read_nfo
+from upload import build_identifier, parse_nfo, read_nfo, slugify
 
 
 def parse_args() -> argparse.Namespace:
@@ -81,6 +82,45 @@ def zip_members(
     return mp3s, nfos, others
 
 
+def build_unverified_identifier(text: str) -> str:
+    """Build a deterministic identifier for legacy/unverified NFO formats.
+
+    Supported banners:
+      TheOrbituary presents... ARTIST live @ The Orbit, DD-MM-YY, Side A.
+      TheOrbituary presents... ARTIST live @ The Orbit, DD-MM-YY.
+      TheOrbituary presents... ARTIST live @ The Orbit, England, YYYY.
+
+    Exact dates are preserved. Year-only sources remain year-only; no date is
+    invented. Unsupported/ambiguous banners fail closed.
+    """
+    banner = re.search(
+        r"TheOrbituary presents\.\.\.\s*(.+?)\s+live\s+@\s+The Orbit,\s*(?:England,\s*)?"
+        r"(?:(\d{2}-\d{2}-\d{2})(?:,\s*Side\s+([A-Za-z0-9]+))?|(\d{4}))\.",
+        text,
+        flags=re.IGNORECASE,
+    )
+    if not banner:
+        raise ValueError("Could not parse supported unverified NFO banner.")
+
+    artist = re.sub(r"\s+", " ", banner.group(1)).strip()
+    exact_date = banner.group(2)
+    side = banner.group(3)
+    year_only = banner.group(4)
+
+    artist_slug = slugify(artist)
+    if not artist_slug:
+        raise ValueError("Could not derive artist slug from unverified NFO banner.")
+
+    if exact_date:
+        day, month, year = (int(part) for part in exact_date.split("-"))
+        full_year = 1900 + year if year >= 91 else 2000 + year
+        date_key = f"{full_year:04d}{month:02d}{day:02d}"
+        side_part = f"-{slugify(side)}" if side else ""
+        return f"orbit-unverified-{date_key}{side_part}-{artist_slug}"
+
+    return f"orbit-unverified-{year_only}-{artist_slug}"
+
+
 def validate_target(path: Path) -> None:
     if path.exists():
         raise FileExistsError(f"destination already exists: {path}")
@@ -119,8 +159,15 @@ def process_zip(zip_path: Path, dest: Path, apply: bool) -> tuple[str, str]:
             with archive.open(nfo_member) as src, nfo_temp.open("wb") as out:
                 shutil.copyfileobj(src, out)
 
-            event, fields = parse_nfo(read_nfo(nfo_temp))
-            basename = build_identifier(event, fields)
+            nfo_text = read_nfo(nfo_temp)
+            try:
+                event, fields = parse_nfo(nfo_text)
+                basename = build_identifier(event, fields)
+            except ValueError as canonical_error:
+                try:
+                    basename = build_unverified_identifier(nfo_text)
+                except ValueError:
+                    raise canonical_error
             mp3_name = f"{basename}.mp3"
             nfo_name = f"{basename}.nfo"
 
