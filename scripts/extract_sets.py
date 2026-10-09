@@ -166,8 +166,11 @@ def process_zip(zip_path: Path, dest: Path, apply: bool) -> tuple[str, str]:
             except ValueError as canonical_error:
                 try:
                     basename = build_unverified_identifier(nfo_text)
-                except ValueError:
-                    raise canonical_error
+                except ValueError as unverified_error:
+                    raise ValueError(
+                        f"{zip_path.name}: unsupported NFO format "
+                        f"(canonical: {canonical_error}; unverified: {unverified_error})"
+                    ) from unverified_error
             mp3_name = f"{basename}.mp3"
             nfo_name = f"{basename}.nfo"
 
