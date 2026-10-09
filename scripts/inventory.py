@@ -36,7 +36,10 @@ from upload import build_description, build_identifier, parse_nfo, read_nfo
 
 STATUSES = (
     "NEW",
+    "PENDING",
+    "READY FOR WEBSITE",
     "SKIPPED",
+    "WEBSITE ONLY",
     "MIGRATION REQUIRED",
     "CONFLICT",
     "ERROR",
@@ -159,8 +162,8 @@ def report_website_only_items(
                 "website": "present",
                 "website_url": " | ".join(urls),
                 "audio_url": "not checked",
-                "status": "ERROR",
-                "note": "website/IA item has no matching local MP3/NFO pair",
+                "status": "WEBSITE ONLY",
+                "note": "existing published item is outside the current local staging set",
             }
         )
 
@@ -209,13 +212,25 @@ def classify(
     if website_state == "conflict":
         return "CONFLICT"
 
-    if canonical_mp3_present and title_matches and description_matches and website_state == "canonical":
-        return "SKIPPED"
+    if (
+        item_exists
+        and not canonical_mp3_present
+        and not legacy_mp3s
+        and title_matches
+        and description_matches
+    ):
+        return "PENDING"
+
+    if canonical_mp3_present and title_matches and description_matches:
+        if website_state == "canonical":
+            return "SKIPPED"
+        if website_state == "missing":
+            return "READY FOR WEBSITE"
 
     if canonical_mp3_present or legacy_mp3s or not title_matches or not description_matches:
         return "MIGRATION REQUIRED"
 
-    return "CONFLICT"
+    return "PENDING"
 
 
 def inspect_pair(
@@ -319,8 +334,11 @@ def inspect_pair(
         )
         row["website"] = web_state
         row["website_url"] = web_url
-        if check_audio and web_state == "canonical":
-            row["audio_url"] = check_audio_url(web_url, audio_timeout)
+        if check_audio and item_exists and canonical_present:
+            canonical_url = (
+                f"https://archive.org/download/{identifier}/{canonical_mp3}"
+            )
+            row["audio_url"] = check_audio_url(canonical_url, audio_timeout)
 
         row["status"] = classify(
             local_pair_ok=local_pair_ok,
@@ -459,6 +477,10 @@ def main() -> int:
         return 1
 
     print("Inventory has no unresolved conflicts/errors.")
+    if counts.get("PENDING", 0):
+        print("Some IA submissions are still propagating; verify them again later.")
+    if counts.get("READY FOR WEBSITE", 0):
+        print("Some IA items are verified and ready to be added to content/sets.json.")
     return 0
 
 

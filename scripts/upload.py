@@ -35,6 +35,10 @@ except ImportError:
     internetarchive = None
 
 
+class RateLimitError(RuntimeError):
+    """Internet Archive rejected the request due to rate limiting/spam protection."""
+
+
 FIELD_MAP = {
     "Filename": "filename",
     "Status": "status",
@@ -69,6 +73,11 @@ def parse_args() -> argparse.Namespace:
         "--identifier",
         help="Override the generated Internet Archive identifier.",
     )
+    parser.add_argument(
+        "--no-wait",
+        action="store_true",
+        help="Return after IA accepts the upload; verify later with inventory.py.",
+    )
     return parser.parse_args()
 
 
@@ -81,6 +90,46 @@ def read_nfo(path: Path) -> str:
 
 def clean_wrapped_value(value: str) -> str:
     return re.sub(r"\s+", " ", value).strip()
+
+
+def derive_djs_file_from_filename(
+    filename: str,
+    djs_set: str,
+) -> str | None:
+    """Derive missing per-file DJ metadata from the original filename.
+
+    The filename must contain a parenthesized DJ list immediately before .mp3.
+    Casing is recovered only from exact case-insensitive matches in DJ(s) for set;
+    otherwise return None rather than guessing.
+    """
+    match = re.search(r"\(([^()]*)\)\.mp3\s*$", filename, flags=re.IGNORECASE)
+    if not match:
+        return None
+
+    filename_parts = [
+        clean_wrapped_value(part)
+        for part in match.group(1).split(",")
+        if clean_wrapped_value(part)
+    ]
+    set_parts = [
+        clean_wrapped_value(part)
+        for part in djs_set.rstrip(".").split(",")
+        if clean_wrapped_value(part)
+    ]
+
+    if not filename_parts or not set_parts:
+        return None
+
+    set_lookup = {part.casefold(): part for part in set_parts}
+    resolved = []
+
+    for part in filename_parts:
+        canonical = set_lookup.get(part.casefold())
+        if canonical is None:
+            return None
+        resolved.append(canonical)
+
+    return ", ".join(resolved)
 
 
 def parse_nfo(text: str) -> tuple[dict[str, str], dict[str, str]]:
@@ -134,6 +183,14 @@ def parse_nfo(text: str) -> tuple[dict[str, str], dict[str, str]]:
             break
 
     save_current()
+
+    if not fields.get("djs_file") and fields.get("filename") and fields.get("djs_set"):
+        derived_djs = derive_djs_file_from_filename(
+            fields["filename"],
+            fields["djs_set"],
+        )
+        if derived_djs:
+            fields["djs_file"] = derived_djs
 
     required = [
         "filename",
@@ -305,6 +362,8 @@ def upload_item(
     audio_path: Path,
     fields: dict[str, str],
     metadata: dict[str, object],
+    *,
+    wait_for_verification: bool = True,
 ) -> None:
     if internetarchive is None:
         raise RuntimeError(
@@ -348,6 +407,19 @@ def upload_item(
                 response.raise_for_status()
                 break
             except requests.exceptions.RequestException as error:
+                error_text = str(error).lower()
+                rate_limited = (
+                    "please reduce your request rate" in error_text
+                    or "appears to be spam" in error_text
+                )
+
+                if rate_limited:
+                    raise RateLimitError(
+                        "Internet Archive rate limit/spam protection triggered; "
+                        "stopping this item without immediate retries: "
+                        f"{error}"
+                    ) from error
+
                 if attempt == transport_retries:
                     raise RuntimeError(
                         f"Upload failed after {transport_retries} connection retries: {error}"
@@ -359,6 +431,11 @@ def upload_item(
                     f"Retrying in {delay} seconds..."
                 )
                 time.sleep(delay)
+
+    if not wait_for_verification:
+        print()
+        print("Submission accepted; verification deferred to inventory.py.")
+        return
 
     expected = {fields["filename"]}
     verification_attempts = 12
@@ -430,9 +507,13 @@ def main() -> int:
             args.audio,
             fields,
             metadata,
+            wait_for_verification=not args.no_wait,
         )
         return 0
 
+    except RateLimitError as error:
+        print(f"ERROR: {error}", file=sys.stderr)
+        return 2
     except (ValueError, RuntimeError) as error:
         print(f"ERROR: {error}", file=sys.stderr)
         return 1

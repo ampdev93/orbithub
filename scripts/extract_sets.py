@@ -9,7 +9,9 @@ Destination:
 
 Each ZIP must contain exactly:
     - one .mp3 file
-    - one release.nfo file
+    - one .nfo file
+
+Any other file in the ZIP is treated as an error.
 
 The MP3 and NFO are renamed to the canonical OrbitHub basename derived
 from the NFO metadata:
@@ -55,9 +57,12 @@ def parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
-def zip_members(archive: zipfile.ZipFile) -> tuple[list[zipfile.ZipInfo], list[zipfile.ZipInfo]]:
+def zip_members(
+    archive: zipfile.ZipFile,
+) -> tuple[list[zipfile.ZipInfo], list[zipfile.ZipInfo], list[zipfile.ZipInfo]]:
     mp3s = []
     nfos = []
+    others = []
 
     for member in archive.infolist():
         if member.is_dir():
@@ -68,10 +73,12 @@ def zip_members(archive: zipfile.ZipFile) -> tuple[list[zipfile.ZipInfo], list[z
 
         if suffix == ".mp3":
             mp3s.append(member)
-        elif name.lower() == "release.nfo":
+        elif suffix == ".nfo":
             nfos.append(member)
+        else:
+            others.append(member)
 
-    return mp3s, nfos
+    return mp3s, nfos, others
 
 
 def validate_target(path: Path) -> None:
@@ -81,7 +88,15 @@ def validate_target(path: Path) -> None:
 
 def process_zip(zip_path: Path, dest: Path, apply: bool) -> tuple[str, str]:
     with zipfile.ZipFile(zip_path) as archive:
-        mp3s, nfos = zip_members(archive)
+        mp3s, nfos, others = zip_members(archive)
+
+        if others:
+            other_names = ", ".join(
+                Path(member.filename).name for member in others
+            )
+            raise ValueError(
+                f"{zip_path.name}: unexpected file(s): {other_names}"
+            )
 
         if len(mp3s) != 1:
             raise ValueError(
@@ -90,7 +105,7 @@ def process_zip(zip_path: Path, dest: Path, apply: bool) -> tuple[str, str]:
 
         if len(nfos) != 1:
             raise ValueError(
-                f"{zip_path.name}: expected exactly 1 release.nfo, found {len(nfos)}"
+                f"{zip_path.name}: expected exactly 1 NFO, found {len(nfos)}"
             )
 
         mp3_member = mp3s[0]
@@ -98,7 +113,8 @@ def process_zip(zip_path: Path, dest: Path, apply: bool) -> tuple[str, str]:
 
         with tempfile.TemporaryDirectory() as tmp_dir:
             tmp = Path(tmp_dir)
-            nfo_temp = tmp / "release.nfo"
+            original_nfo_name = Path(nfo_member.filename).name
+            nfo_temp = tmp / original_nfo_name
 
             with archive.open(nfo_member) as src, nfo_temp.open("wb") as out:
                 shutil.copyfileobj(src, out)
@@ -118,7 +134,7 @@ def process_zip(zip_path: Path, dest: Path, apply: bool) -> tuple[str, str]:
 
             print(f"{zip_path.name}")
             print(f"  MP3: {original_mp3_name} -> {mp3_name}")
-            print(f"  NFO: release.nfo -> {nfo_name}")
+            print(f"  NFO: {original_nfo_name} -> {nfo_name}")
 
             if not apply:
                 return mp3_name, nfo_name
