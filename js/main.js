@@ -167,7 +167,7 @@ async function renderLinks() {
 
         link.appendChild(label);
         target.appendChild(link);
-        eventTarget.appendChild(document.createElement("br"));
+        target.appendChild(document.createElement("br"));
     });
 }
 
