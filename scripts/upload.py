@@ -179,13 +179,25 @@ def parse_unverified_nfo(text: str) -> tuple[dict[str, str], dict[str, str]]:
         text,
         flags=re.IGNORECASE,
     )
-    if not banner:
-        raise ValueError("Could not parse supported unverified NFO banner.")
+    if banner:
+        artist = clean_wrapped_value(banner.group(1))
+        exact_date = banner.group(2)
+        year_only = banner.group(3)
+        side = banner.group(4) or ""
+    else:
+        undated = re.search(
+            r"TheOrbituary presents\.\.\.\s*(.+?)\s+live\s+@\s+The Orbit,\s*"
+            r"Side\s+([A-Za-z0-9]+)\.?",
+            text,
+            flags=re.IGNORECASE,
+        )
+        if not undated:
+            raise ValueError("Could not parse supported unverified NFO banner.")
 
-    artist = clean_wrapped_value(banner.group(1))
-    exact_date = banner.group(2)
-    year_only = banner.group(3)
-    side = banner.group(4) or ""
+        artist = clean_wrapped_value(undated.group(1))
+        exact_date = None
+        year_only = None
+        side = undated.group(2) or ""
 
     if exact_date:
         display_date = exact_date
