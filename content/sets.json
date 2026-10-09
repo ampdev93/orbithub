@@ -330,6 +330,18 @@
     ]
   },
   {
+    "date": "1991-06-28",
+    "display_date": "28/06/1991",
+    "verified": false,
+    "sets": [
+      {
+        "number": 1,
+        "artist": "Eddie Richards",
+        "audio": "https://archive.org/download/orbit-unverified-19910628-eddie-richards/orbit-unverified-19910628-eddie-richards.mp3"
+      }
+    ]
+  },
+  {
     "date": "1992",
     "display_date": "1992",
     "verified": false,
@@ -382,6 +394,50 @@
         "artist": "Dave Angel - Side B",
         "audio": "https://archive.org/download/orbit-unverified-19920822-b-dave-angel/orbit-unverified-19920822-b-dave-angel.mp3",
         "number": 2
+      },
+      {
+        "number": 3,
+        "artist": "Joey Beltram - Side A",
+        "audio": "https://archive.org/download/orbit-unverified-19920822-a-joey-beltram/orbit-unverified-19920822-a-joey-beltram.mp3"
+      },
+      {
+        "number": 4,
+        "artist": "Joey Beltram - Side B",
+        "audio": "https://archive.org/download/orbit-unverified-19920822-b-joey-beltram/orbit-unverified-19920822-b-joey-beltram.mp3"
+      }
+    ]
+  },
+  {
+    "date": "1993-02-20",
+    "display_date": "20/02/1993",
+    "verified": false,
+    "sets": [
+      {
+        "number": 1,
+        "artist": "Dave Angel - Side A",
+        "audio": "https://archive.org/download/orbit-unverified-19930220-a-dave-angel/orbit-unverified-19930220-a-dave-angel.mp3"
+      },
+      {
+        "number": 2,
+        "artist": "Dave Angel - Side B",
+        "audio": "https://archive.org/download/orbit-unverified-19930220-b-dave-angel/orbit-unverified-19930220-b-dave-angel.mp3"
+      }
+    ]
+  },
+  {
+    "date": "1993-04-17",
+    "display_date": "17/04/1993",
+    "verified": false,
+    "sets": [
+      {
+        "number": 1,
+        "artist": "Dave Angel - Side A",
+        "audio": "https://archive.org/download/orbit-unverified-19930417-a-dave-angel/orbit-unverified-19930417-a-dave-angel.mp3"
+      },
+      {
+        "number": 2,
+        "artist": "Dave Angel - Side B",
+        "audio": "https://archive.org/download/orbit-unverified-19930417-b-dave-angel/orbit-unverified-19930417-b-dave-angel.mp3"
       }
     ]
   },
@@ -403,6 +459,18 @@
     ]
   },
   {
+    "date": "1993-05-08",
+    "display_date": "08/05/1993",
+    "verified": false,
+    "sets": [
+      {
+        "number": 1,
+        "artist": "DJ T-1000",
+        "audio": "https://archive.org/download/orbit-unverified-19930508-dj-t-1000/orbit-unverified-19930508-dj-t-1000.mp3"
+      }
+    ]
+  },
+  {
     "date": "1993-05-22",
     "display_date": "22/05/1993",
     "verified": false,
@@ -415,6 +483,23 @@
     ]
   },
   {
+    "date": "1993-06-12",
+    "display_date": "12/06/1993",
+    "verified": false,
+    "sets": [
+      {
+        "number": 1,
+        "artist": "Dag - Side A",
+        "audio": "https://archive.org/download/orbit-unverified-19930612-a-dag/orbit-unverified-19930612-a-dag.mp3"
+      },
+      {
+        "number": 2,
+        "artist": "Dag - Side B",
+        "audio": "https://archive.org/download/orbit-unverified-19930612-b-dag/orbit-unverified-19930612-b-dag.mp3"
+      }
+    ]
+  },
+  {
     "date": "2001-12-01",
     "display_date": "01/12/2001",
     "verified": false,
@@ -423,6 +508,11 @@
         "artist": "Claude Young",
         "audio": "https://archive.org/download/orbit-unverified-20011201-claude-young/orbit-unverified-20011201-claude-young.mp3",
         "number": 1
+      },
+      {
+        "number": 2,
+        "artist": "John Berry",
+        "audio": "https://archive.org/download/orbit-unverified-20011201-john-berry/orbit-unverified-20011201-john-berry.mp3"
       }
     ]
   },
