@@ -408,6 +408,23 @@
     ]
   },
   {
+    "date": "1993",
+    "display_date": "1993",
+    "verified": false,
+    "sets": [
+      {
+        "number": 1,
+        "artist": "Joey Beltram - Side A",
+        "audio": "https://archive.org/download/orbit-unverified-1993-a-joey-beltram/orbit-unverified-1993-a-joey-beltram.mp3"
+      },
+      {
+        "number": 2,
+        "artist": "Joey Beltram - Side B",
+        "audio": "https://archive.org/download/orbit-unverified-1993-b-joey-beltram/orbit-unverified-1993-b-joey-beltram.mp3"
+      }
+    ]
+  },
+  {
     "date": "1993-02-20",
     "display_date": "20/02/1993",
     "verified": false,
@@ -421,6 +438,23 @@
         "number": 2,
         "artist": "Dave Angel - Side B",
         "audio": "https://archive.org/download/orbit-unverified-19930220-b-dave-angel/orbit-unverified-19930220-b-dave-angel.mp3"
+      }
+    ]
+  },
+  {
+    "date": "1993-03-06",
+    "display_date": "06/03/1993",
+    "verified": false,
+    "sets": [
+      {
+        "number": 1,
+        "artist": "Joey Beltram - Side A",
+        "audio": "https://archive.org/download/orbit-unverified-19930306-a-joey-beltram/orbit-unverified-19930306-a-joey-beltram.mp3"
+      },
+      {
+        "number": 2,
+        "artist": "Joey Beltram - Side B",
+        "audio": "https://archive.org/download/orbit-unverified-19930306-b-joey-beltram/orbit-unverified-19930306-b-joey-beltram.mp3"
       }
     ]
   },
@@ -496,6 +530,64 @@
         "number": 2,
         "artist": "Dag - Side B",
         "audio": "https://archive.org/download/orbit-unverified-19930612-b-dag/orbit-unverified-19930612-b-dag.mp3"
+      }
+    ]
+  },
+  {
+    "date": "1994",
+    "display_date": "1994",
+    "verified": false,
+    "sets": [
+      {
+        "number": 1,
+        "artist": "John Berry",
+        "audio": "https://archive.org/download/orbit-unverified-1994-john-berry/orbit-unverified-1994-john-berry.mp3"
+      }
+    ]
+  },
+  {
+    "date": "1994-06-18",
+    "display_date": "18/06/1994",
+    "verified": false,
+    "sets": [
+      {
+        "number": 1,
+        "artist": "Jeff Mills - Side A",
+        "audio": "https://archive.org/download/orbit-unverified-19940618-a-jeff-mills/orbit-unverified-19940618-a-jeff-mills.mp3"
+      },
+      {
+        "number": 2,
+        "artist": "Jeff Mills - Side B",
+        "audio": "https://archive.org/download/orbit-unverified-19940618-b-jeff-mills/orbit-unverified-19940618-b-jeff-mills.mp3"
+      }
+    ]
+  },
+  {
+    "date": "1997-06-07",
+    "display_date": "07/06/1997",
+    "verified": false,
+    "sets": [
+      {
+        "number": 1,
+        "artist": "Jay Denham",
+        "audio": "https://archive.org/download/orbit-unverified-19970607-jay-denham/orbit-unverified-19970607-jay-denham.mp3"
+      }
+    ]
+  },
+  {
+    "date": "1999-01-30",
+    "display_date": "30/01/1999",
+    "verified": false,
+    "sets": [
+      {
+        "number": 1,
+        "artist": "Jon Nuccle - Side A",
+        "audio": "https://archive.org/download/orbit-unverified-19990130-a-jon-nuccle/orbit-unverified-19990130-a-jon-nuccle.mp3"
+      },
+      {
+        "number": 2,
+        "artist": "Jon Nuccle - Side B",
+        "audio": "https://archive.org/download/orbit-unverified-19990130-b-jon-nuccle/orbit-unverified-19990130-b-jon-nuccle.mp3"
       }
     ]
   },
