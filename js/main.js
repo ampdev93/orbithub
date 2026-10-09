@@ -75,6 +75,14 @@ async function renderSets() {
     const events = await loadJson("content/sets.json");
 
     events.forEach(event => {
+        const eventTarget = event.verified === false
+            ? document.getElementById("unverified-sets-list")
+            : target;
+
+        if (!eventTarget) {
+            return;
+        }
+
         const date = document.createElement(event.flyer ? "a" : "span");
         date.textContent = event.display_date || event.date;
 
@@ -84,12 +92,12 @@ async function renderSets() {
             date.rel = "noopener noreferrer";
         }
 
-        target.appendChild(date);
-        target.appendChild(document.createTextNode(" "));
+        eventTarget.appendChild(date);
+        eventTarget.appendChild(document.createTextNode(" "));
 
         event.sets.forEach((set, index) => {
             const setLink = document.createElement("a");
-            const label = `${set.number}. ${set.artist}`;
+            const label = set.label || `${set.number}. ${set.artist}`;
 
             setLink.href = "#";
             setLink.className = "set-link";
@@ -103,14 +111,14 @@ async function renderSets() {
                 playSet(set.audio);
             });
 
-            target.appendChild(setLink);
+            eventTarget.appendChild(setLink);
 
             if (index < event.sets.length - 1) {
-                target.appendChild(document.createTextNode(" "));
+                eventTarget.appendChild(document.createTextNode(" "));
             }
         });
 
-        target.appendChild(document.createElement("br"));
+        eventTarget.appendChild(document.createElement("br"));
     });
 }
 
@@ -159,7 +167,7 @@ async function renderLinks() {
 
         link.appendChild(label);
         target.appendChild(link);
-        target.appendChild(document.createElement("br"));
+        eventTarget.appendChild(document.createElement("br"));
     });
 }
 
