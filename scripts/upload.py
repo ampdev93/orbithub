@@ -45,6 +45,7 @@ FIELD_MAP = {
     "Release Date": "release_date",
     "File Size": "file_size",
     "Length": "length",
+    "Uploaded by": "uploaded_by",
     "Encoded by": "encoded_by",
     "Type": "type",
     "Audio Format": "audio_format",
@@ -56,6 +57,7 @@ FIELD_MAP = {
     "DJ(s) for this file": "djs_file",
     "DJ(s) for set": "djs_set",
     "Notes": "notes",
+    "Additional Info": "additional_info",
 }
 
 
@@ -132,21 +134,7 @@ def derive_djs_file_from_filename(
     return ", ".join(resolved)
 
 
-def parse_nfo(text: str) -> tuple[dict[str, str], dict[str, str]]:
-    banner_match = re.search(
-        r"Live sets from The Orbit,\s*(\d{2}-\d{2}-\d{2}),\s*File\s+(\d+)\s+of\s+(\d+)\.",
-        text,
-        flags=re.IGNORECASE,
-    )
-    if not banner_match:
-        raise ValueError("Could not parse event date/file number from .nfo banner.")
-
-    event = {
-        "display_date": banner_match.group(1),
-        "file_number": banner_match.group(2),
-        "file_total": banner_match.group(3),
-    }
-
+def parse_fields(text: str) -> dict[str, str]:
     lines = text.splitlines()
     fields: dict[str, str] = {}
     current_key: str | None = None
@@ -164,9 +152,6 @@ def parse_nfo(text: str) -> tuple[dict[str, str], dict[str, str]]:
         if match:
             save_current()
             raw_key = match.group(1).strip()
-
-            if raw_key == "Archive Name":
-                continue
             if raw_key in FIELD_MAP:
                 current_key = FIELD_MAP[raw_key]
                 current_value = [match.group(2).strip()]
@@ -183,6 +168,83 @@ def parse_nfo(text: str) -> tuple[dict[str, str], dict[str, str]]:
             break
 
     save_current()
+    return fields
+
+
+def parse_unverified_nfo(text: str) -> tuple[dict[str, str], dict[str, str]]:
+    banner = re.search(
+        r"TheOrbituary presents\.\.\.\s*(.+?)\s+live\s+@\s+The Orbit,\s*(?:England,\s*)?"
+        r"(?:(\d{2}-\d{2}-\d{2})|(\d{4})|\[Date Unknown\])"
+        r"(?:,\s*Side\s+([A-Za-z0-9]+))?\.?",
+        text,
+        flags=re.IGNORECASE,
+    )
+    if not banner:
+        raise ValueError("Could not parse supported unverified NFO banner.")
+
+    artist = clean_wrapped_value(banner.group(1))
+    exact_date = banner.group(2)
+    year_only = banner.group(3)
+    side = banner.group(4) or ""
+
+    if exact_date:
+        display_date = exact_date
+        date_precision = "day"
+    elif year_only:
+        display_date = year_only
+        date_precision = "year"
+    else:
+        display_date = "[Date Unknown]"
+        date_precision = "unknown"
+
+    fields = parse_fields(text)
+    required = [
+        "filename",
+        "release_date",
+        "file_size",
+        "length",
+        "audio_format",
+        "bitrate",
+        "sample_rate",
+        "channels",
+        "source",
+    ]
+    missing = [name for name in required if not fields.get(name)]
+    if missing:
+        raise ValueError(
+            "Missing required unverified .nfo fields: " + ", ".join(missing)
+        )
+
+    fields["original_filename"] = fields["filename"]
+    fields["djs_file"] = artist
+
+    event = {
+        "kind": "unverified",
+        "display_date": display_date,
+        "date_precision": date_precision,
+        "side": side,
+        "artist": artist,
+    }
+    return event, fields
+
+
+def parse_nfo(text: str) -> tuple[dict[str, str], dict[str, str]]:
+    banner_match = re.search(
+        r"Live sets from The Orbit,\s*(\d{2}-\d{2}-\d{2}),\s*File\s+(\d+)\s+of\s+(\d+)\.",
+        text,
+        flags=re.IGNORECASE,
+    )
+    if not banner_match:
+        return parse_unverified_nfo(text)
+
+    event = {
+        "kind": "canonical",
+        "display_date": banner_match.group(1),
+        "file_number": banner_match.group(2),
+        "file_total": banner_match.group(3),
+    }
+
+    fields = parse_fields(text)
 
     if not fields.get("djs_file") and fields.get("filename") and fields.get("djs_set"):
         derived_djs = derive_djs_file_from_filename(
@@ -241,8 +303,25 @@ def slugify(value: str) -> str:
 
 
 def build_identifier(event: dict[str, str], fields: dict[str, str]) -> str:
-    compact_date = event_date_iso(event["display_date"]).replace("-", "")
     artist = slugify(fields["djs_file"])
+
+    if event.get("kind") == "unverified":
+        side = event.get("side", "")
+        side_part = f"-{slugify(side)}" if side else ""
+        precision = event.get("date_precision")
+
+        if precision == "day":
+            date_key = event_date_iso(event["display_date"]).replace("-", "")
+        elif precision == "year":
+            date_key = event["display_date"]
+        elif precision == "unknown":
+            date_key = "unknown"
+        else:
+            raise ValueError("Unsupported unverified date precision.")
+
+        return f"orbit-unverified-{date_key}{side_part}-{artist}"
+
+    compact_date = event_date_iso(event["display_date"]).replace("-", "")
     return f"orbit-{compact_date}-{event['file_number']}-{artist}"
 
 
@@ -272,8 +351,53 @@ def build_description(event: dict[str, str], fields: dict[str, str]) -> str:
     if not re.search(r"\bbytes\b", file_size, flags=re.I):
         file_size = f"{file_size} bytes"
 
-    notes = normalize_notes(fields["notes"])
+    if event.get("kind") == "unverified":
+        location = event["display_date"]
+        if event.get("side"):
+            location += f" — Side {event['side']}"
 
+        lines = [
+            (
+                f"<strong>OrbitHub archive:</strong> {esc(fields['djs_file'])} live @ "
+                f"The Orbit, {esc(location)}.<br><br>"
+            ),
+            "<strong>Archive status:</strong> Unverified legacy set<br>",
+            f"<strong>Filename:</strong> {esc(fields['filename'])}<br>",
+        ]
+        if fields.get("original_filename") and fields["original_filename"] != fields["filename"]:
+            lines.append(
+                f"<strong>Original filename:</strong> {esc(fields['original_filename'])}<br>"
+            )
+        if fields.get("status"):
+            lines.append(f"<strong>Source NFO status:</strong> {esc(fields['status'])}<br>")
+        lines.extend(
+            [
+                f"<strong>Original Release Date:</strong> {esc(fields['release_date'])}<br>",
+                f"<strong>File Size:</strong> {esc(file_size)}<br>",
+                f"<strong>Length:</strong> {esc(fields['length'])}<br>",
+            ]
+        )
+        if fields.get("uploaded_by"):
+            lines.append(f"<strong>Uploaded by:</strong> {esc(fields['uploaded_by'])}<br>")
+        if fields.get("encoded_by"):
+            lines.append(f"<strong>Encoded by:</strong> {esc(fields['encoded_by'])}<br>")
+        lines.extend(
+            [
+                f"<strong>Type:</strong> {esc(fields.get('type', 'Music - DJ Set - Techno'))}<br>",
+                f"<strong>Audio Format:</strong> {esc(fields['audio_format'])}<br>",
+                f"<strong>Bitrate:</strong> {esc(fields['bitrate'])}<br>",
+                f"<strong>Sample Rate:</strong> {esc(fields['sample_rate'])}<br>",
+                f"<strong>Channels:</strong> {esc(fields['channels'])}<br>",
+                f"<strong>Source:</strong> {esc(fields['source'])}<br>",
+            ]
+        )
+        if fields.get("additional_info"):
+            lines.append(
+                f"<br><strong>Additional Info:</strong> {esc(fields['additional_info'])}"
+            )
+        return "\n".join(lines)
+
+    notes = normalize_notes(fields["notes"])
     return "\n".join(
         [
             (
@@ -300,13 +424,28 @@ def build_description(event: dict[str, str], fields: dict[str, str]) -> str:
         ]
     )
 
-
 def build_metadata(
     identifier: str,
     event: dict[str, str],
     fields: dict[str, str],
     description: str,
 ) -> dict[str, object]:
+    if event.get("kind") == "unverified":
+        side = f" - Side {event['side']}" if event.get("side") else ""
+        metadata: dict[str, object] = {
+            "mediatype": "audio",
+            "title": (
+                f"The Orbit - {event['display_date']}{side} - {fields['djs_file']}"
+            ),
+            "description": description,
+            "subject": ["The Orbit", "Techno", "DJ Set", "Unverified"],
+        }
+        if event.get("date_precision") == "day":
+            metadata["date"] = event_date_iso(event["display_date"])
+        elif event.get("date_precision") == "year":
+            metadata["date"] = event["display_date"]
+        return metadata
+
     return {
         "mediatype": "audio",
         "title": (
@@ -317,7 +456,6 @@ def build_metadata(
         "description": description,
         "subject": ["The Orbit", "Techno", "DJ Set"],
     }
-
 
 def print_preview(
     identifier: str,
@@ -332,7 +470,7 @@ def print_preview(
     print(f"Audio      : {audio_path}")
     print(f"Remote name: {fields['filename']}")
     print(f"Title      : {metadata['title']}")
-    print(f"Date       : {metadata['date']}")
+    print(f"Date       : {metadata.get('date', '-')}")
     print()
     print("Description")
     print("-" * 32)
