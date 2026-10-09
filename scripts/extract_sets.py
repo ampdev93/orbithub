@@ -94,7 +94,7 @@ def build_unverified_identifier(text: str) -> str:
     invented. Unsupported/ambiguous banners fail closed.
     """
     banner = re.search(
-        r"TheOrbituary presents\.\.\.\s*(.+?)\s+live\s+@\s+The Orbit,\s*(?:England,\s*)?"
+        r"TheOrbituary presents\.\.\.\s*(.+?)\s+live\s+@\s+The Orbit,\s*(?:(?:England|Ossett),\s*)?"
         r"(?:(\d{2}-\d{2}-\d{2})|(\d{4})|\[Date Unknown\])"
         r"(?:,\s*Side\s+([A-Za-z0-9]+))?\.?",
         text,
