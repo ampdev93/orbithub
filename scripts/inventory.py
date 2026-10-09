@@ -31,7 +31,7 @@ try:
 except ImportError:
     internetarchive = None
 
-from upload import build_description, build_identifier, parse_nfo, read_nfo
+from upload import build_description, build_identifier, build_metadata, parse_nfo, read_nfo
 
 
 STATUSES = (
@@ -270,7 +270,7 @@ def inspect_pair(
         row.update(
             {
                 "event": event["display_date"],
-                "file": event["file_number"],
+                "file": event.get("file_number") or event.get("side") or "-",
                 "dj": fields["djs_file"],
                 "identifier": identifier,
                 "canonical_mp3": canonical_mp3,
@@ -305,13 +305,13 @@ def inspect_pair(
             legacy_mp3s = [name for name in mp3_names if name != canonical_mp3]
             row["ia_mp3"] = ", ".join(mp3_names) if mp3_names else "-"
 
-            desired_title = (
-                f"The Orbit - {event['display_date']} - "
-                f"File {event['file_number']} of {event['file_total']} - {fields['djs_file']}"
-            )
             desired_fields = dict(fields)
             desired_fields["filename"] = canonical_mp3
             desired = build_description(event, desired_fields)
+            desired_metadata = build_metadata(
+                identifier, event, desired_fields, desired
+            )
+            desired_title = str(desired_metadata["title"])
 
             current_title = item.metadata.get("title", "")
             current_description = item.metadata.get("description", "")

@@ -9,7 +9,6 @@ Verification remains a separate scripts/inventory.py pass.
 from __future__ import annotations
 
 import argparse
-import subprocess
 import sys
 import time
 from pathlib import Path
@@ -25,6 +24,8 @@ from upload import (
     build_metadata,
     parse_nfo,
     read_nfo,
+    upload_item,
+    RateLimitError,
 )
 
 
@@ -74,7 +75,7 @@ def remote_names(item) -> set[str]:
     return result
 
 
-def inspect(nfo_path: Path) -> tuple[str, str, Path, str, str]:
+def inspect(nfo_path: Path) -> tuple[str, str, Path, str, str, dict[str, str], dict[str, object]]:
     event, fields = parse_nfo(read_nfo(nfo_path))
     identifier = build_identifier(event, fields)
     audio_path = nfo_path.with_suffix(".mp3")
@@ -94,7 +95,7 @@ def inspect(nfo_path: Path) -> tuple[str, str, Path, str, str]:
 
     item = internetarchive.get_item(identifier)
     if not item.exists:
-        return identifier, "NEW", audio_path, str(metadata["title"]), "identifier not present on IA"
+        return identifier, "NEW", audio_path, str(metadata["title"]), "identifier not present on IA", fields, metadata
 
     names = remote_names(item)
     current_title = item.metadata.get("title", "")
@@ -113,6 +114,8 @@ def inspect(nfo_path: Path) -> tuple[str, str, Path, str, str]:
             audio_path,
             str(metadata["title"]),
             "existing canonical IA item is complete",
+            fields,
+            metadata,
         )
 
     if not names or not canonical_mp3 in names:
@@ -122,6 +125,8 @@ def inspect(nfo_path: Path) -> tuple[str, str, Path, str, str]:
             audio_path,
             str(metadata["title"]),
             "IA item exists but canonical MP3 is not visible yet; treat as propagation pending",
+            fields,
+            metadata,
         )
 
     return (
@@ -130,6 +135,8 @@ def inspect(nfo_path: Path) -> tuple[str, str, Path, str, str]:
         audio_path,
         str(metadata["title"]),
         "existing IA item differs from canonical metadata",
+        fields,
+        metadata,
     )
 
 
@@ -184,31 +191,37 @@ def main() -> int:
 
     for nfo_path in files:
         try:
-            identifier, status, audio_path, title, note = inspect(nfo_path)
+            identifier, status, audio_path, title, note, fields, metadata = inspect(nfo_path)
             print(f"[{status}] {identifier}")
             print(f"  Title : {title}")
             print(f"  Note  : {note}")
 
             if status == "NEW" and args.apply:
-                result = subprocess.run(
-                    [sys.executable, "scripts/upload.py", str(audio_path), "--upload", "--no-wait"],
-                    check=False,
-                )
-                if result.returncode == 0:
+                try:
+                    upload_item(
+                        identifier,
+                        nfo_path,
+                        audio_path,
+                        fields,
+                        metadata,
+                        wait_for_verification=False,
+                    )
                     status = "SUBMITTED"
                     successful_submissions += 1
                     remaining_candidates = files.index(nfo_path) < len(files) - 1
                     if args.delay and remaining_candidates:
                         print(f"  Throttle: waiting {args.delay}s before next item...")
                         time.sleep(args.delay)
-                elif result.returncode == 2:
+                except RateLimitError as error:
                     status = "ERROR"
                     counts[status] += 1
+                    print(f"  ERROR: {error}")
                     print("  Rate limit detected. Stopping the batch immediately.")
                     print()
                     break
-                else:
+                except RuntimeError as error:
                     status = "ERROR"
+                    print(f"  ERROR: {error}")
             elif status in {"PENDING", "CONFLICT"}:
                 print("  No mutation performed.")
 

@@ -59,17 +59,30 @@ docs/IA_METADATA.md
 
 ## Local preparation
 
-Raw ZIP archives are stored in:
+The archive workflow uses exactly these two persistent staging directories for all batches:
+
+```text
+work/sets-to-unzip/
+work/sets-to-upload/
+```
+
+Do not introduce per-batch staging directories such as `work/batch-2/`, `work/unverified-batch-2-zips/`, or alternate upload directories during an active archive run. New batches continue through the same established paths.
+
+Raw ZIP archives are placed in:
 
 ```text
 work/sets-to-unzip/
 ```
 
-Prepared MP3/NFO pairs are stored in:
+Prepared MP3/NFO pairs are written to:
 
 ```text
 work/sets-to-upload/
 ```
+
+This applies to both verified/canonical DAT sets and unverified legacy sets. The parser and metadata rules may differ by source format, but the local staging process does not.
+
+Completed files remain governed by the existing safe/idempotent workflow. Do not delete, move, rename, or clear staged files merely to start the next batch unless a separate cleanup operation has been explicitly reviewed and approved.
 
 The normal preparation flow is:
 
@@ -92,7 +105,7 @@ write matching MP3/NFO pair to work/sets-to-upload/
 The extraction tool must:
 
 - find exactly one MP3 per ZIP
-- find exactly one `release.nfo` per ZIP
+- find exactly one NFO file per ZIP (the filename may vary, e.g. `release.nfo`)
 - derive the canonical basename from NFO metadata
 - refuse filename collisions
 - refuse unsafe overwrites
