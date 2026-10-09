@@ -79,6 +79,41 @@
         "number": 1,
         "artist": "Nigel Walker",
         "audio": "https://archive.org/download/orbit-19941231-1-nigel-walker/orbit-19941231-1-nigel-walker.mp3"
+      },
+      {
+        "number": 2,
+        "artist": "Nigel Walker",
+        "audio": "https://archive.org/download/orbit-19941231-2-nigel-walker/orbit-19941231-2-nigel-walker.mp3"
+      },
+      {
+        "number": 3,
+        "artist": "John Berry",
+        "audio": "https://archive.org/download/orbit-19941231-3-john-berry/orbit-19941231-3-john-berry.mp3"
+      },
+      {
+        "number": 4,
+        "artist": "John Berry",
+        "audio": "https://archive.org/download/orbit-19941231-4-john-berry/orbit-19941231-4-john-berry.mp3"
+      },
+      {
+        "number": 5,
+        "artist": "Vapourspace, Speedy J",
+        "audio": "https://archive.org/download/orbit-19941231-5-vapourspace-speedy-j/orbit-19941231-5-vapourspace-speedy-j.mp3"
+      },
+      {
+        "number": 6,
+        "artist": "Vapourspace, Speedy J",
+        "audio": "https://archive.org/download/orbit-19941231-6-vapourspace-speedy-j/orbit-19941231-6-vapourspace-speedy-j.mp3"
+      },
+      {
+        "number": 7,
+        "artist": "Marco Zaffarano",
+        "audio": "https://archive.org/download/orbit-19941231-7-marco-zaffarano/orbit-19941231-7-marco-zaffarano.mp3"
+      },
+      {
+        "number": 8,
+        "artist": "Marco Zaffarano",
+        "audio": "https://archive.org/download/orbit-19941231-8-marco-zaffarano/orbit-19941231-8-marco-zaffarano.mp3"
       }
     ]
   },
@@ -126,6 +161,32 @@
         "number": 2,
         "artist": "Joey Beltram",
         "audio": "https://archive.org/download/orbit-19950128-2-joey-beltram/orbit-19950128-2-joey-beltram.mp3"
+      }
+    ]
+  },
+  {
+    "date": "1995-05-06",
+    "display_date": "06/05/1995",
+    "sets": [
+      {
+        "number": 1,
+        "artist": "Residents, Cari Lekebusch, Glenn wilson",
+        "audio": "https://archive.org/download/orbit-19950506-1-residents-cari-lekebusch-glenn-wilson/orbit-19950506-1-residents-cari-lekebusch-glenn-wilson.mp3"
+      },
+      {
+        "number": 2,
+        "artist": "Residents, Cari Lekebusch, Glenn wilson",
+        "audio": "https://archive.org/download/orbit-19950506-2-residents-cari-lekebusch-glenn-wilson/orbit-19950506-2-residents-cari-lekebusch-glenn-wilson.mp3"
+      },
+      {
+        "number": 3,
+        "artist": "Residents, Cari Lekebusch, Glenn wilson",
+        "audio": "https://archive.org/download/orbit-19950506-3-residents-cari-lekebusch-glenn-wilson/orbit-19950506-3-residents-cari-lekebusch-glenn-wilson.mp3"
+      },
+      {
+        "number": 4,
+        "artist": "Residents, Cari Lekebusch, Glenn wilson",
+        "audio": "https://archive.org/download/orbit-19950506-4-residents-cari-lekebusch-glenn-wilson/orbit-19950506-4-residents-cari-lekebusch-glenn-wilson.mp3"
       }
     ]
   },
