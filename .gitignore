@@ -2,3 +2,7 @@ incremental/
 work/
 assets/images
 orbithub.geany
+
+# Unreviewed external research images (retain locally until approved)
+research/orbit/downloads/
+research/orbit/downloads.csv
