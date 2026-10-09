@@ -335,19 +335,19 @@
     "verified": false,
     "sets": [
       {
-        "label": "Aphex Twin",
         "artist": "Aphex Twin",
-        "audio": "https://archive.org/download/orbit-unverified-1992-aphex-twin/orbit-unverified-1992-aphex-twin.mp3"
+        "audio": "https://archive.org/download/orbit-unverified-1992-aphex-twin/orbit-unverified-1992-aphex-twin.mp3",
+        "number": 1
       },
       {
-        "label": "Side A - Dave Angel",
-        "artist": "Dave Angel",
-        "audio": "https://archive.org/download/orbit-unverified-1992-a-dave-angel/orbit-unverified-1992-a-dave-angel.mp3"
+        "artist": "Dave Angel - Side A",
+        "audio": "https://archive.org/download/orbit-unverified-1992-a-dave-angel/orbit-unverified-1992-a-dave-angel.mp3",
+        "number": 2
       },
       {
-        "label": "Side B - Dave Angel",
-        "artist": "Dave Angel",
-        "audio": "https://archive.org/download/orbit-unverified-1992-b-dave-angel/orbit-unverified-1992-b-dave-angel.mp3"
+        "artist": "Dave Angel - Side B",
+        "audio": "https://archive.org/download/orbit-unverified-1992-b-dave-angel/orbit-unverified-1992-b-dave-angel.mp3",
+        "number": 3
       }
     ]
   },
@@ -357,14 +357,14 @@
     "verified": false,
     "sets": [
       {
-        "label": "Side A - CJ Bolland",
-        "artist": "CJ Bolland",
-        "audio": "https://archive.org/download/orbit-unverified-19920704-a-cj-bolland/orbit-unverified-19920704-a-cj-bolland.mp3"
+        "artist": "CJ Bolland - Side A",
+        "audio": "https://archive.org/download/orbit-unverified-19920704-a-cj-bolland/orbit-unverified-19920704-a-cj-bolland.mp3",
+        "number": 1
       },
       {
-        "label": "Side B - CJ Bolland",
-        "artist": "CJ Bolland",
-        "audio": "https://archive.org/download/orbit-unverified-19920704-b-cj-bolland/orbit-unverified-19920704-b-cj-bolland.mp3"
+        "artist": "CJ Bolland - Side B",
+        "audio": "https://archive.org/download/orbit-unverified-19920704-b-cj-bolland/orbit-unverified-19920704-b-cj-bolland.mp3",
+        "number": 2
       }
     ]
   },
@@ -374,14 +374,14 @@
     "verified": false,
     "sets": [
       {
-        "label": "Side A - Dave Angel",
-        "artist": "Dave Angel",
-        "audio": "https://archive.org/download/orbit-unverified-19920822-a-dave-angel/orbit-unverified-19920822-a-dave-angel.mp3"
+        "artist": "Dave Angel - Side A",
+        "audio": "https://archive.org/download/orbit-unverified-19920822-a-dave-angel/orbit-unverified-19920822-a-dave-angel.mp3",
+        "number": 1
       },
       {
-        "label": "Side B - Dave Angel",
-        "artist": "Dave Angel",
-        "audio": "https://archive.org/download/orbit-unverified-19920822-b-dave-angel/orbit-unverified-19920822-b-dave-angel.mp3"
+        "artist": "Dave Angel - Side B",
+        "audio": "https://archive.org/download/orbit-unverified-19920822-b-dave-angel/orbit-unverified-19920822-b-dave-angel.mp3",
+        "number": 2
       }
     ]
   },
@@ -391,14 +391,14 @@
     "verified": false,
     "sets": [
       {
-        "label": "Side A - CJ Bolland",
-        "artist": "CJ Bolland",
-        "audio": "https://archive.org/download/orbit-unverified-19930501-a-cj-bolland/orbit-unverified-19930501-a-cj-bolland.mp3"
+        "artist": "CJ Bolland - Side A",
+        "audio": "https://archive.org/download/orbit-unverified-19930501-a-cj-bolland/orbit-unverified-19930501-a-cj-bolland.mp3",
+        "number": 1
       },
       {
-        "label": "Side B - CJ Bolland",
-        "artist": "CJ Bolland",
-        "audio": "https://archive.org/download/orbit-unverified-19930501-b-cj-bolland/orbit-unverified-19930501-b-cj-bolland.mp3"
+        "artist": "CJ Bolland - Side B",
+        "audio": "https://archive.org/download/orbit-unverified-19930501-b-cj-bolland/orbit-unverified-19930501-b-cj-bolland.mp3",
+        "number": 2
       }
     ]
   },
@@ -408,9 +408,9 @@
     "verified": false,
     "sets": [
       {
-        "label": "Colin Favor",
         "artist": "Colin Favor",
-        "audio": "https://archive.org/download/orbit-unverified-19930522-colin-favor/orbit-unverified-19930522-colin-favor.mp3"
+        "audio": "https://archive.org/download/orbit-unverified-19930522-colin-favor/orbit-unverified-19930522-colin-favor.mp3",
+        "number": 1
       }
     ]
   },
@@ -420,9 +420,9 @@
     "verified": false,
     "sets": [
       {
-        "label": "Claude Young",
         "artist": "Claude Young",
-        "audio": "https://archive.org/download/orbit-unverified-20011201-claude-young/orbit-unverified-20011201-claude-young.mp3"
+        "audio": "https://archive.org/download/orbit-unverified-20011201-claude-young/orbit-unverified-20011201-claude-young.mp3",
+        "number": 1
       }
     ]
   },
@@ -432,9 +432,9 @@
     "verified": false,
     "sets": [
       {
-        "label": "Cold Dust",
         "artist": "Cold Dust",
-        "audio": "https://archive.org/download/orbit-unverified-unknown-cold-dust/orbit-unverified-unknown-cold-dust.mp3"
+        "audio": "https://archive.org/download/orbit-unverified-unknown-cold-dust/orbit-unverified-unknown-cold-dust.mp3",
+        "number": 1
       }
     ]
   }
