@@ -100,14 +100,27 @@ def build_unverified_identifier(text: str) -> str:
         text,
         flags=re.IGNORECASE,
     )
-    if not banner:
-        raise ValueError("Could not parse supported unverified NFO banner.")
+    if banner:
+        artist = re.sub(r"\s+", " ", banner.group(1)).strip()
+        exact_date = banner.group(2)
+        year_only = banner.group(3)
+        side = banner.group(4)
+        date_unknown = "[Date Unknown]" in banner.group(0)
+    else:
+        undated = re.search(
+            r"TheOrbituary presents\.\.\.\s*(.+?)\s+live\s+@\s+The Orbit,\s*"
+            r"Side\s+([A-Za-z0-9]+)\.?",
+            text,
+            flags=re.IGNORECASE,
+        )
+        if not undated:
+            raise ValueError("Could not parse supported unverified NFO banner.")
 
-    artist = re.sub(r"\s+", " ", banner.group(1)).strip()
-    exact_date = banner.group(2)
-    year_only = banner.group(3)
-    side = banner.group(4)
-    date_unknown = "[Date Unknown]" in banner.group(0)
+        artist = re.sub(r"\s+", " ", undated.group(1)).strip()
+        exact_date = None
+        year_only = None
+        side = undated.group(2)
+        date_unknown = True
 
     artist_slug = slugify(artist)
     if not artist_slug:
