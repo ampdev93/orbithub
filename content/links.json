@@ -1,58 +1,97 @@
 [
   {
     "title": "James Lange Photography",
+    "category": "photography",
     "url": "https://jameslangephotography.com/welcome-2/clubbing/the-orbit-morley-1994/"
   },
   {
     "title": "Threads Radio",
+    "category": "article/interview",
     "url": "https://threadsradio.com/post/revisit-morleys-techno-mecca-the-orbit"
   },
   {
     "title": "Yorkshire Evening Post",
+    "category": "article",
     "url": "https://www.yorkshireeveningpost.co.uk/heritage-and-retro/retro/the-orbit-memories-of-a-legendary-leeds-club-night-4187586"
   },
   {
     "title": "Flyers (Phatmedia)",
+    "category": "flyers",
     "url": "https://www.phatmedia.co.uk/flyers/search/name/orbit"
   },
   {
     "title": "Flyers (OldSkoolAnthems)",
+    "category": "flyers",
     "url": "https://www.oldskoolanthems.com/media/categories/orbit.87/"
   },
   {
     "title": "Soundcloud: sets",
+    "category": "audio",
     "url": "https://soundcloud.com/jamiedmusic/sets/the-orbit-morley-sets"
   },
   {
     "title": "Soundcloud: Sven Vath @ The Orbit",
+    "category": "audio",
     "url": "https://soundcloud.com/jamiedmusic/sven-vath-the-orbit-6-hour-set"
   },
   {
     "title": "Soundcloud: Surgeon @ The Orbit",
+    "category": "audio",
     "url": "https://soundcloud.com/craigleagordon/surgeon-the-orbit-morley-leeds-1997"
   },
   {
     "title": "Instagram: CJ Bolland @ The Orbit",
+    "category": "social/video",
     "url": "https://www.instagram.com/reel/DUyeUg9DPfb/"
   },
   {
     "title": "Facebook: Claude Young @ The Orbit",
+    "category": "social/video",
     "url": "https://www.facebook.com/lostravecommunity/videos/claude-young-at-the-orbit-1997/1038427834545589/"
   },
   {
     "title": "Facebook (Orbit48)",
+    "category": "community",
     "url": "https://www.facebook.com/Orbit48/"
   },
   {
     "title": "Reddit: Aphex Twin @ The Orbit",
+    "category": "discussion",
     "url": "https://www.reddit.com/r/aphextwin/comments/cuuogi/aphex_twin_live_at_the_orbit_morley_leeds_uk_1992/"
   },
   {
     "title": "Youtube: Various clips",
+    "category": "video",
     "url": "https://www.youtube.com/watch?v=e2YUyPuUO80"
   },
   {
     "title": "Youtube: Various sets",
+    "category": "video",
     "url": "https://www.youtube.com/@JONNYTECHNO1/videos"
+  },
+  {
+    "title": "DJWORX — Orbit DJ sets",
+    "category": "audio/index",
+    "url": "https://djworx.com/the-orbit-leeds-dj-sets/"
+  },
+  {
+    "title": "DJWORX — Orbit club history",
+    "category": "article",
+    "url": "https://djworx.com/the-orbit-leeds-techno-club-history/"
+  },
+  {
+    "title": "MixesDB — Orbit",
+    "category": "audio/index",
+    "url": "https://www.mixesdb.com/w/Category%3AOrbit_%28Event%29"
+  },
+  {
+    "title": "88to98 — Orbit Leeds",
+    "category": "history/archive",
+    "url": "https://88to98rave.wordpress.com/2011/02/05/orbit/"
+  },
+  {
+    "title": "Phatmedia — Orbit June 1994 flyer",
+    "category": "flyers",
+    "url": "https://www.phatmedia.co.uk/flyers/event/orbit-flyer13"
   }
 ]
