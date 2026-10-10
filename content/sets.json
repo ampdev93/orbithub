@@ -342,6 +342,59 @@
     ]
   },
   {
+    "date": "1991-07-20",
+    "display_date": "20/07/1991",
+    "verified": false,
+    "sets": [
+      {
+        "number": 1,
+        "artist": "Pigsy",
+        "audio": "https://archive.org/download/orbit-unverified-19910720-pigsy/orbit-unverified-19910720-pigsy.mp3"
+      }
+    ]
+  },
+  {
+    "date": "1991-10-12",
+    "display_date": "12/10/1991",
+    "verified": false,
+    "sets": [
+      {
+        "number": 1,
+        "artist": "Sy",
+        "audio": "https://archive.org/download/orbit-unverified-19911012-sy/orbit-unverified-19911012-sy.mp3"
+      }
+    ]
+  },
+  {
+    "date": "1991-12-01",
+    "display_date": "01/12/1991",
+    "verified": false,
+    "sets": [
+      {
+        "number": 1,
+        "artist": "Sasha & Man Parris",
+        "audio": "https://archive.org/download/orbit-unverified-19911201-sasha-and-man-parris/orbit-unverified-19911201-sasha-and-man-parris.mp3"
+      }
+    ]
+  },
+  {
+    "date": "1991-12-28",
+    "display_date": "28/12/1991",
+    "verified": false,
+    "sets": [
+      {
+        "number": 1,
+        "artist": "Sy - Side A",
+        "audio": "https://archive.org/download/orbit-unverified-19911228-a-sy/orbit-unverified-19911228-a-sy.mp3"
+      },
+      {
+        "number": 2,
+        "artist": "Sy - Side B",
+        "audio": "https://archive.org/download/orbit-unverified-19911228-b-sy/orbit-unverified-19911228-b-sy.mp3"
+      }
+    ]
+  },
+  {
     "date": "1992",
     "display_date": "1992",
     "verified": false,
@@ -360,6 +413,30 @@
         "artist": "Dave Angel - Side B",
         "audio": "https://archive.org/download/orbit-unverified-1992-b-dave-angel/orbit-unverified-1992-b-dave-angel.mp3",
         "number": 3
+      }
+    ]
+  },
+  {
+    "date": "1992-01-25",
+    "display_date": "25/01/1992",
+    "verified": false,
+    "sets": [
+      {
+        "number": 1,
+        "artist": "Nipper & John Berry",
+        "audio": "https://archive.org/download/orbit-unverified-19920125-nipper-and-john-berry/orbit-unverified-19920125-nipper-and-john-berry.mp3"
+      }
+    ]
+  },
+  {
+    "date": "1992-04-25",
+    "display_date": "25/04/1992",
+    "verified": false,
+    "sets": [
+      {
+        "number": 1,
+        "artist": "Nipper",
+        "audio": "https://archive.org/download/orbit-unverified-19920425-nipper/orbit-unverified-19920425-nipper.mp3"
       }
     ]
   },
@@ -404,6 +481,23 @@
         "number": 4,
         "artist": "Joey Beltram - Side B",
         "audio": "https://archive.org/download/orbit-unverified-19920822-b-joey-beltram/orbit-unverified-19920822-b-joey-beltram.mp3"
+      }
+    ]
+  },
+  {
+    "date": "1992-11-28",
+    "display_date": "28/11/1992",
+    "verified": false,
+    "sets": [
+      {
+        "number": 1,
+        "artist": "Richie Hawtin - Side A",
+        "audio": "https://archive.org/download/orbit-unverified-19921128-a-richie-hawtin/orbit-unverified-19921128-a-richie-hawtin.mp3"
+      },
+      {
+        "number": 2,
+        "artist": "Richie Hawtin - Side B",
+        "audio": "https://archive.org/download/orbit-unverified-19921128-b-richie-hawtin/orbit-unverified-19921128-b-richie-hawtin.mp3"
       }
     ]
   },
@@ -585,6 +679,23 @@
     ]
   },
   {
+    "date": "1994-02-26",
+    "display_date": "26/02/1994",
+    "verified": false,
+    "sets": [
+      {
+        "number": 1,
+        "artist": "Marco Zaffarano - Side A",
+        "audio": "https://archive.org/download/orbit-unverified-19940226-a-marco-zaffarano/orbit-unverified-19940226-a-marco-zaffarano.mp3"
+      },
+      {
+        "number": 2,
+        "artist": "Marco Zaffarano - Side B",
+        "audio": "https://archive.org/download/orbit-unverified-19940226-b-marco-zaffarano/orbit-unverified-19940226-b-marco-zaffarano.mp3"
+      }
+    ]
+  },
+  {
     "date": "1994-06-18",
     "display_date": "18/06/1994",
     "verified": false,
@@ -598,6 +709,23 @@
         "number": 2,
         "artist": "Jeff Mills - Side B",
         "audio": "https://archive.org/download/orbit-unverified-19940618-b-jeff-mills/orbit-unverified-19940618-b-jeff-mills.mp3"
+      }
+    ]
+  },
+  {
+    "date": "1995",
+    "display_date": "1995",
+    "verified": false,
+    "sets": [
+      {
+        "number": 1,
+        "artist": "Nigel Walker - Side A",
+        "audio": "https://archive.org/download/orbit-unverified-1995-a-nigel-walker/orbit-unverified-1995-a-nigel-walker.mp3"
+      },
+      {
+        "number": 2,
+        "artist": "Nigel Walker - Side B",
+        "audio": "https://archive.org/download/orbit-unverified-1995-b-nigel-walker/orbit-unverified-1995-b-nigel-walker.mp3"
       }
     ]
   },
@@ -627,6 +755,18 @@
         "number": 1,
         "artist": "Jay Denham",
         "audio": "https://archive.org/download/orbit-unverified-19970607-jay-denham/orbit-unverified-19970607-jay-denham.mp3"
+      }
+    ]
+  },
+  {
+    "date": "1998-10-31",
+    "display_date": "31/10/1998",
+    "verified": false,
+    "sets": [
+      {
+        "number": 1,
+        "artist": "Richie Hawtin",
+        "audio": "https://archive.org/download/orbit-unverified-19981031-richie-hawtin/orbit-unverified-19981031-richie-hawtin.mp3"
       }
     ]
   },
