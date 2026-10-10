@@ -174,7 +174,7 @@ def parse_fields(text: str) -> dict[str, str]:
 def parse_unverified_nfo(text: str) -> tuple[dict[str, str], dict[str, str]]:
     banner = re.search(
         r"TheOrbituary presents\.\.\.\s*(.+?)\s+live\s+@\s+The Orbit,\s*(?:(?:England|Ossett),\s*)?"
-        r"(?:(\d{2}-\d{2}-\d{2})|(\d{4})|\[Date Unknown\])"
+        r"(?:(\d{1,2}-\d{1,2}-\d{2})|(\d{4})|\[Date Unknown\])"
         r"(?:,\s*Side\s+([A-Za-z0-9]+))?\.?",
         text,
         flags=re.IGNORECASE,
@@ -242,7 +242,7 @@ def parse_unverified_nfo(text: str) -> tuple[dict[str, str], dict[str, str]]:
 
 def parse_nfo(text: str) -> tuple[dict[str, str], dict[str, str]]:
     banner_match = re.search(
-        r"Live sets from The Orbit,\s*(\d{2}-\d{2}-\d{2}),\s*File\s+(\d+)\s+of\s+(\d+)\.",
+        r"Live sets from The Orbit,\s*(\d{1,2}-\d{1,2}-\d{2}),\s*File\s+(\d+)\s+of\s+(\d+)\.",
         text,
         flags=re.IGNORECASE,
     )
