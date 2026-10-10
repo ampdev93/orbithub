@@ -127,6 +127,51 @@ python3 scripts/extract_sets.py --apply
 
 only after the dry-run output has been reviewed.
 
+## Unverified legacy sets
+
+Legacy Orbit releases that are not part of the verified first-generation DAT collection use a separate unverified naming contract.
+
+Supported identifier forms are:
+
+```text
+orbit-unverified-YYYYMMDD[-side]-artist
+orbit-unverified-YYYY[-side]-artist
+orbit-unverified-unknown[-side]-artist
+```
+
+Examples:
+
+```text
+orbit-unverified-19930417-a-westbam
+orbit-unverified-1995-westbam
+orbit-unverified-unknown-a-john-e-bloc-and-tanith
+```
+
+Rules:
+
+- preserve the source date precision exactly
+- exact dates are normalized to `YYYYMMDD` in the identifier
+- year-only releases remain year-only; do not invent a month or day
+- unknown-date releases remain unknown; do not invent a year
+- one- or two-digit legacy day/month values are accepted and normalized when the source NFO supplies an exact date
+- preserve side labels when present
+- preserve the legacy `Source` value from the NFO, such as `Tape` or `MiniDisk`; do not convert legacy sources to DAT
+- preserve source NFO status separately when present, but source wording does not make a legacy item part of the verified DAT collection
+- retain legitimate `Additional Info` metadata
+- unverified website events use `"verified": false`
+- direct website audio URLs use the same canonical IA pattern as other sets
+
+The publication gate is the same safety gate used elsewhere:
+
+```text
+IA item metadata verified
++ canonical MP3 present
++ direct audio URL verified
+→ eligible for content/sets.json
+```
+
+An accepted IA submission is not sufficient on its own. If direct audio verification is pending because of IA propagation or a transient CDN/network failure, wait and rerun `scripts/inventory.py --check-audio` before publishing.
+
 ## Internet Archive item rules
 
 The Internet Archive item identifier must equal the canonical basename:
@@ -429,6 +474,21 @@ source ZIP
 → local website test
 → merge
 ```
+
+## Current archive snapshot
+
+As of completion of the currently held set backlog:
+
+```text
+Total inventory items : 124
+Unresolved NEW        : 0
+Unresolved PENDING    : 0
+Unresolved READY      : 0
+Unresolved CONFLICT   : 0
+Unresolved ERROR      : 0
+```
+
+This is a point-in-time operational snapshot, not a permanent archive-total guarantee. Future recovered sets may increase the inventory.
 
 ## Change control
 
