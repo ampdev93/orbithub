@@ -576,6 +576,16 @@
         "number": 2,
         "artist": "Dave Angel - Side B",
         "audio": "https://archive.org/download/orbit-unverified-19930417-b-dave-angel/orbit-unverified-19930417-b-dave-angel.mp3"
+      },
+      {
+        "number": 3,
+        "artist": "Westbam - Side A",
+        "audio": "https://archive.org/download/orbit-unverified-19930417-a-westbam/orbit-unverified-19930417-a-westbam.mp3"
+      },
+      {
+        "number": 4,
+        "artist": "Westbam - Side B",
+        "audio": "https://archive.org/download/orbit-unverified-19930417-b-westbam/orbit-unverified-19930417-b-westbam.mp3"
       }
     ]
   },
@@ -667,6 +677,18 @@
     ]
   },
   {
+    "date": "1993-10-16",
+    "display_date": "16/10/1993",
+    "verified": false,
+    "sets": [
+      {
+        "number": 1,
+        "artist": "Westbam",
+        "audio": "https://archive.org/download/orbit-unverified-19931016-westbam/orbit-unverified-19931016-westbam.mp3"
+      }
+    ]
+  },
+  {
     "date": "1994",
     "display_date": "1994",
     "verified": false,
@@ -675,6 +697,18 @@
         "number": 1,
         "artist": "John Berry",
         "audio": "https://archive.org/download/orbit-unverified-1994-john-berry/orbit-unverified-1994-john-berry.mp3"
+      }
+    ]
+  },
+  {
+    "date": "1994-01-22",
+    "display_date": "22/01/1994",
+    "verified": false,
+    "sets": [
+      {
+        "number": 1,
+        "artist": "Tanith",
+        "audio": "https://archive.org/download/orbit-unverified-19940122-tanith/orbit-unverified-19940122-tanith.mp3"
       }
     ]
   },
@@ -726,6 +760,11 @@
         "number": 2,
         "artist": "Nigel Walker - Side B",
         "audio": "https://archive.org/download/orbit-unverified-1995-b-nigel-walker/orbit-unverified-1995-b-nigel-walker.mp3"
+      },
+      {
+        "number": 3,
+        "artist": "Westbam",
+        "audio": "https://archive.org/download/orbit-unverified-1995-westbam/orbit-unverified-1995-westbam.mp3"
       }
     ]
   },
@@ -747,6 +786,23 @@
     ]
   },
   {
+    "date": "1995-07-01",
+    "display_date": "01/07/1995",
+    "verified": false,
+    "sets": [
+      {
+        "number": 1,
+        "artist": "Sven Vath - Side A",
+        "audio": "https://archive.org/download/orbit-unverified-19950701-a-sven-vath/orbit-unverified-19950701-a-sven-vath.mp3"
+      },
+      {
+        "number": 2,
+        "artist": "Sven Vath - Side B",
+        "audio": "https://archive.org/download/orbit-unverified-19950701-b-sven-vath/orbit-unverified-19950701-b-sven-vath.mp3"
+      }
+    ]
+  },
+  {
     "date": "1997-06-07",
     "display_date": "07/06/1997",
     "verified": false,
@@ -755,6 +811,18 @@
         "number": 1,
         "artist": "Jay Denham",
         "audio": "https://archive.org/download/orbit-unverified-19970607-jay-denham/orbit-unverified-19970607-jay-denham.mp3"
+      }
+    ]
+  },
+  {
+    "date": "1997-12-31",
+    "display_date": "31/12/1997",
+    "verified": false,
+    "sets": [
+      {
+        "number": 1,
+        "artist": "Surgeon",
+        "audio": "https://archive.org/download/orbit-unverified-19971231-surgeon/orbit-unverified-19971231-surgeon.mp3"
       }
     ]
   },
@@ -806,6 +874,28 @@
         "number": 3,
         "artist": "Miss Kittin",
         "audio": "https://archive.org/download/orbit-unverified-20011201-miss-kittin/orbit-unverified-20011201-miss-kittin.mp3"
+      }
+    ]
+  },
+  {
+    "date": "2002-02-23",
+    "display_date": "23/02/2002",
+    "verified": false,
+    "sets": [
+      {
+        "number": 1,
+        "artist": "Thomas Krome & CJ Bolland - Side A",
+        "audio": "https://archive.org/download/orbit-unverified-20020223-a-thomas-krome-and-cj-bolland/orbit-unverified-20020223-a-thomas-krome-and-cj-bolland.mp3"
+      },
+      {
+        "number": 2,
+        "artist": "Thomas Krome & CJ Bolland - Side B",
+        "audio": "https://archive.org/download/orbit-unverified-20020223-b-thomas-krome-and-cj-bolland/orbit-unverified-20020223-b-thomas-krome-and-cj-bolland.mp3"
+      },
+      {
+        "number": 3,
+        "artist": "Thomas Krome & CJ Bolland - Side C",
+        "audio": "https://archive.org/download/orbit-unverified-20020223-c-thomas-krome-and-cj-bolland/orbit-unverified-20020223-c-thomas-krome-and-cj-bolland.mp3"
       }
     ]
   },
