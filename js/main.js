@@ -155,19 +155,31 @@ async function renderLinks() {
 
     const links = await loadJson("content/links.json");
 
-    links.forEach(item => {
-        const link = document.createElement("a");
-        link.href = item.url;
-        link.target = "_blank";
-        link.rel = "noopener noreferrer";
-        link.className = "icon-link";
+    const sections = [
+        ["Articles & History", ["article", "article/interview", "history/archive"]],
+        ["Flyers & Photography", ["flyers", "photography"]],
+        ["Music & Video", ["audio", "audio/index", "video", "social/video"]],
+        ["Community", ["community", "discussion"]]
+    ];
 
-        const label = document.createElement("span");
-        label.textContent = item.title;
+    sections.forEach(([heading, categories]) => {
+        const items = links.filter(item => categories.includes(item.category));
+        if (!items.length) return;
 
-        link.appendChild(label);
-        target.appendChild(link);
-        target.appendChild(document.createElement("br"));
+        const title = document.createElement("h3");
+        title.textContent = heading;
+        target.appendChild(title);
+
+        items.forEach(item => {
+            const link = document.createElement("a");
+            link.href = item.url;
+            link.target = "_blank";
+            link.rel = "noopener noreferrer";
+            link.className = "icon-link";
+            link.textContent = item.title;
+            target.appendChild(link);
+            target.appendChild(document.createElement("br"));
+        });
     });
 }
 
