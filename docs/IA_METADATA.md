@@ -137,6 +137,67 @@ Internet Archive description:
 <strong>Notes:</strong> The named DJ(s) will feature on this recording. More than one DJ may play on the same recording.
 ```
 
+## Unverified legacy metadata
+
+Unverified legacy releases use the source NFO as provenance but do not apply the verified DAT normalization rules.
+
+Retain applicable legacy fields:
+
+- Filename
+- Source NFO status, when present
+- Original Release Date
+- File Size
+- Length
+- Uploaded by, when present
+- Encoded by, when present
+- Type
+- Audio Format
+- Bitrate
+- Sample Rate
+- Channels
+- Source
+- Additional Info, when present
+
+For unverified legacy items:
+
+- keep the source medium as written in the NFO, such as `Tape` or `MiniDisk`
+- do not rewrite the source to DAT
+- preserve year-only or unknown dates without inventing missing precision
+- preserve side labels when present
+- source NFO status may be retained as provenance, but OrbitHub classification remains unverified unless the set belongs to the verified first-generation DAT collection
+- remove obsolete TheOrbituary/site/contact/promotional material
+- do not upload the NFO unless archive policy changes later
+
+Canonical title forms are:
+
+```text
+The Orbit - DD-MM-YY - DJ
+The Orbit - DD-MM-YY - Side A - DJ
+The Orbit - YYYY - DJ
+The Orbit - YYYY - Side A - DJ
+The Orbit - [Date Unknown] - DJ
+The Orbit - [Date Unknown] - Side A - DJ
+```
+
+Canonical unverified description structure:
+
+```html
+<strong>OrbitHub archive:</strong> DJ live @ The Orbit, DATE [— Side X].<br><br>
+<strong>Archive status:</strong> Unverified legacy set<br>
+<strong>Filename:</strong> canonical-filename.mp3<br>
+<strong>Original Release Date:</strong> source release date<br>
+<strong>File Size:</strong> source file size<br>
+<strong>Length:</strong> source length<br>
+<strong>Type:</strong> source type<br>
+<strong>Audio Format:</strong> source audio format<br>
+<strong>Bitrate:</strong> source bitrate<br>
+<strong>Sample Rate:</strong> source sample rate<br>
+<strong>Channels:</strong> source channels<br>
+<strong>Source:</strong> source medium<br>
+```
+
+Optional provenance fields such as source NFO status, Uploaded by, Encoded by and Additional Info are included when present.
+
 ## Automation
 
 Any future conversion or upload script should follow this document as the normalization contract.
