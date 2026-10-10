@@ -421,6 +421,16 @@
         "number": 2,
         "artist": "Joey Beltram - Side B",
         "audio": "https://archive.org/download/orbit-unverified-1993-b-joey-beltram/orbit-unverified-1993-b-joey-beltram.mp3"
+      },
+      {
+        "number": 3,
+        "artist": "Laurent Garnier - Side A",
+        "audio": "https://archive.org/download/orbit-unverified-1993-a-laurent-garnier/orbit-unverified-1993-a-laurent-garnier.mp3"
+      },
+      {
+        "number": 4,
+        "artist": "Laurent Garnier - Side B",
+        "audio": "https://archive.org/download/orbit-unverified-1993-b-laurent-garnier/orbit-unverified-1993-b-laurent-garnier.mp3"
       }
     ]
   },
@@ -517,6 +527,23 @@
     ]
   },
   {
+    "date": "1993-06-05",
+    "display_date": "05/06/1993",
+    "verified": false,
+    "sets": [
+      {
+        "number": 1,
+        "artist": "Marco Zaffarano - Side A",
+        "audio": "https://archive.org/download/orbit-unverified-19930605-a-marco-zaffarano/orbit-unverified-19930605-a-marco-zaffarano.mp3"
+      },
+      {
+        "number": 2,
+        "artist": "Marco Zaffarano - Side B",
+        "audio": "https://archive.org/download/orbit-unverified-19930605-b-marco-zaffarano/orbit-unverified-19930605-b-marco-zaffarano.mp3"
+      }
+    ]
+  },
+  {
     "date": "1993-06-12",
     "display_date": "12/06/1993",
     "verified": false,
@@ -530,6 +557,18 @@
         "number": 2,
         "artist": "Dag - Side B",
         "audio": "https://archive.org/download/orbit-unverified-19930612-b-dag/orbit-unverified-19930612-b-dag.mp3"
+      }
+    ]
+  },
+  {
+    "date": "1993-10-09",
+    "display_date": "09/10/1993",
+    "verified": false,
+    "sets": [
+      {
+        "number": 1,
+        "artist": "Marco Zaffarano",
+        "audio": "https://archive.org/download/orbit-unverified-19931009-marco-zaffarano/orbit-unverified-19931009-marco-zaffarano.mp3"
       }
     ]
   },
@@ -559,6 +598,23 @@
         "number": 2,
         "artist": "Jeff Mills - Side B",
         "audio": "https://archive.org/download/orbit-unverified-19940618-b-jeff-mills/orbit-unverified-19940618-b-jeff-mills.mp3"
+      }
+    ]
+  },
+  {
+    "date": "1995-02-11",
+    "display_date": "11/02/1995",
+    "verified": false,
+    "sets": [
+      {
+        "number": 1,
+        "artist": "Justin Robertson - Side A",
+        "audio": "https://archive.org/download/orbit-unverified-19950211-a-justin-robertson/orbit-unverified-19950211-a-justin-robertson.mp3"
+      },
+      {
+        "number": 2,
+        "artist": "Justin Robertson - Side B",
+        "audio": "https://archive.org/download/orbit-unverified-19950211-b-justin-robertson/orbit-unverified-19950211-b-justin-robertson.mp3"
       }
     ]
   },
@@ -605,6 +661,28 @@
         "number": 2,
         "artist": "John Berry",
         "audio": "https://archive.org/download/orbit-unverified-20011201-john-berry/orbit-unverified-20011201-john-berry.mp3"
+      },
+      {
+        "number": 3,
+        "artist": "Miss Kittin",
+        "audio": "https://archive.org/download/orbit-unverified-20011201-miss-kittin/orbit-unverified-20011201-miss-kittin.mp3"
+      }
+    ]
+  },
+  {
+    "date": "2002-06-15",
+    "display_date": "15/06/2002",
+    "verified": false,
+    "sets": [
+      {
+        "number": 1,
+        "artist": "Marco Carola - Side A",
+        "audio": "https://archive.org/download/orbit-unverified-20020615-a-marco-carola/orbit-unverified-20020615-a-marco-carola.mp3"
+      },
+      {
+        "number": 2,
+        "artist": "Marco Carola - Side B",
+        "audio": "https://archive.org/download/orbit-unverified-20020615-b-marco-carola/orbit-unverified-20020615-b-marco-carola.mp3"
       }
     ]
   },
@@ -617,6 +695,16 @@
         "artist": "Cold Dust",
         "audio": "https://archive.org/download/orbit-unverified-unknown-cold-dust/orbit-unverified-unknown-cold-dust.mp3",
         "number": 1
+      },
+      {
+        "number": 2,
+        "artist": "John E-Bloc & Tanith - Side A",
+        "audio": "https://archive.org/download/orbit-unverified-unknown-a-john-e-bloc-and-tanith/orbit-unverified-unknown-a-john-e-bloc-and-tanith.mp3"
+      },
+      {
+        "number": 3,
+        "artist": "John E-Bloc & Tanith - Side B",
+        "audio": "https://archive.org/download/orbit-unverified-unknown-b-john-e-bloc-and-tanith/orbit-unverified-unknown-b-john-e-bloc-and-tanith.mp3"
       }
     ]
   }
